@@ -1,0 +1,11 @@
+__pycache__/
+.ipynb_checkpoints/
+archive/
+local/
+*.zip
+*.npz
+*.so
+*.tar.gz
+*.tgz
+*.bak
+.DS_Store
