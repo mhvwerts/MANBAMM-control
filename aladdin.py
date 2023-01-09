@@ -4,7 +4,7 @@
 import serial
 
 class Aladdin:
-    def __init__(self, port_str, baudrate):
+    def __init__(self, port_str, baudrate = 9600):
         self.port_str = port_str
         self.ser_timeout = 1.0
         self.baudrate = baudrate
