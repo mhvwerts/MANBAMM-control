@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-
+from time import sleep
 import serial
 
 class Aladdin:
