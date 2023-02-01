@@ -16,13 +16,13 @@ The library depends on non-standard packages which are listed in `requirements.t
 conda install --file requirements.txt                        
 ```
 
+For GUI development, we have started using [`Remi`](https://github.com/rawpython/remi). This is a very lightweight, platform-independent library that uses a web-browser for the graphical interface (via HTML5/CSS/JavaScript) with the application that running as a web-server in Python. Very clever! No large framework to be installed. We make small extensions to this library (modified widgets, etc.), collected in `remi_extras.py`
+
+
 ## Equipment list
 
 ### Aladdin syringe pump
 
 The well-known red "Aladdin" syringe pump by World Precision Instruments (https://www.wpi-europe.com/), equipped with RS232 serial communications, and TTL control.
 
-
-
-
-
+Development has started on a small GUI application (when time permits) for Aladdin pump configuration & control. Not yet in a functional state.
