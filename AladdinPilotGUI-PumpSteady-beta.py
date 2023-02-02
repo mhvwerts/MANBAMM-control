@@ -36,6 +36,7 @@ syringetype_items = {'1mL (/ 5.333mm)': 'AladdinString1',
                      '20mL (/ 26.66mm)': 'AladdinString4'}
 syringetypes = list(syringetype_items.keys())
 
+pumprates = ['0.5', '1.0', '2.0', '5.0', '10.0', '20.0', '50.0']
 
 # UI update schedule
 SCHEDULE_STEP = 1.0
@@ -62,10 +63,10 @@ class AladdinPumpSteady(remi.App):
             t1 = time()
             if t1 > self.next_sched:
                 # TODO get pump state (send-receive)
-                
-                # toggle button color (to get the idea)
+
                 # TODO: blink buttons according to pump state
-                print(self.button211.css_background_color)
+                # print(self.button211.css_background_color)
+                # For now, toggle button color (to get the idea)
                 if self.button211.css_background_color == '':
                     self.button211.css_background_color = "rgb(0,200,0)"
                 else:
@@ -133,7 +134,6 @@ class AladdinPumpSteady(remi.App):
         hbox22 = gui.HBox()
         hbox22.append(gui.Label('pump rate', 
                                 width=80))
-        pumprates = ['0.5', '1.0', '2.0', '5.0', '10.0', '20.0', '50.0']
         self.dmenu22 = gui.DropDown.new_from_list(pumprates,
                                      width=80)
         hbox22.append(self.dmenu22)
@@ -230,7 +230,8 @@ class AladdinPumpSteady(remi.App):
 
         
     def close41(self, widget):
-        closedialog = gui.GenericDialog('Please confirm', 'The app will be terminated. Close your browser tab.')
+        closedialog = gui.GenericDialog('Please confirm',
+                                        "The app will be terminated. Click 'OK', then close your browser tab.")
         closedialog.confirm_dialog.do(self.onclosedialog41_confirm)
         closedialog.show(self)
         
