@@ -52,24 +52,35 @@ class Aladdin:
         sendstr = idstr + cmdstr
         reply = self.send_recv(sendstr)
         # decode expected reply, and raise error if not coherent
-        # TODO: improve error handling by raising Exceptions
+        # TODO: improve error handling by raising Exceptions or other messaging
         # reply can be None!! this should be handled
         # if error raised => close communications? or try recovery... (retries...)
         #   for now, make that decision in the main program
-        assert len(reply) > 2, 'unexpected response. sent: '+sendstr+\
-            ', received: '+reply
-        pumpid = reply[0:2]
-        assert pumpid == idstr, 'pump idstr not OK. sent: '+sendstr+\
-            ', received: '+reply
-        pumpstatus = reply[2]
-        # allowable pump statuses (for now - we do not support withdraw)
-        assert pumpstatus in ['A', 'P','S','I'],\
-            'pump status not supported. sent: '+sendstr+\
+        if reply is not None:
+            assert len(reply) > 2, 'unexpected response. sent: '+sendstr+\
                 ', received: '+reply
-        pumpreply = reply[3:]
+            pumpid = reply[0:2]
+            assert pumpid == idstr, 'pump idstr not OK. sent: '+sendstr+\
+                ', received: '+reply
+            pumpstatus = reply[2]
+            # allowable pump statuses 
+            assert pumpstatus in ['A','P','S','I','W'],\
+                'pump status not supported. sent: '+sendstr+\
+                    ', received: '+reply
+            pumpreply = reply[3:]
+        else:
+            # None receive, this is mostly the result of not receiving
+            # a response from the pump (timeout)
+            # TODO: handle timeouts better
+            # in this case, to transfer the message just output 'None'
+            # everywhere
+            pumpid = None
+            pumpstatus = None
+            pumpreply = None
+
         self.last_pumpid = pumpid
         self.last_pumpstatus = pumpstatus
-        self.last_pumpreply = pumpstatus
+        self.last_pumpreply = pumpreply
         return (pumpstatus, pumpreply)
     
     def close(self):

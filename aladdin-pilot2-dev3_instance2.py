@@ -5,6 +5,9 @@ Created on Tue Jan 24 17:30:06 2023
 @author: Martinus Werts
 
 
+Identical script to be run as a separate process to test concurrency of 
+pump control over separate COM ports
+
 Initial explorations for 'aladdin pilot v2'
 
 This is very preliminary and should be adapted to the experiment in the lab.
@@ -19,8 +22,8 @@ from aladdin import Aladdin
 # port and pump identifiers
 
 # port_str = '/dev/ttyUSB0'
-port_str = 'COM7'
-pump_id = '02'
+port_str = 'COM9'
+pump_id = '01'
 
 
 # test configuration sequence
@@ -43,12 +46,12 @@ for cmdstr in [
                
                # step 3: with the standard program in place, we can use pump as normal
                'DIA20.0', # TODO select 'valid' diameters (syringes) - this control units for VOL
-               'RAT17.77UM', # rate
+               'RAT18.27UM', # rate
                'DIRINF', # inject
                'CLDINF', # clear dispensed volume (inject)
-               'DIS' #THIS COMMAND PROVIDES THE UNITS for the VOL command
+               'DIS', #THIS COMMAND PROVIDES THE UNITS for the VOL command
                         # anyways, we will not use VOL now, but we will in future
-                # to get a "STOP" on the display?
+               #
                ]:
     print('===============')
     print('cmdstr = ', cmdstr)
