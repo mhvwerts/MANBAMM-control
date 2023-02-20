@@ -25,4 +25,9 @@ For GUI development, we have started using [`Remi`](https://github.com/rawpython
 
 The well-known red "Aladdin" syringe pump by World Precision Instruments (https://www.wpi-europe.com/), equipped with RS232 serial communications, and TTL control.
 
-Development has started on a small GUI application (when time permits) for Aladdin pump configuration & control. Not yet in a functional state.
+Development has started on a small GUI application for Aladdin pump configuration & control. This app is functional, but not yet polished.
+
+
+### VICI EUHA chromatography valve
+
+VICI (Valco Instruments Co. Inc.) micro-controlled EUHA valve, with RS232 serial communications. Should also get its place in the GUI control.
