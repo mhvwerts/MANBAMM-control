@@ -61,6 +61,10 @@ print('Test comms and valve...')
 
 print('... not yet using device ID ...')
 
+print('... not yet checking that operation be two-position with stops (= factory default) ...')
+
+print('... all this should be done: TO DO ...')
+
 # try some comms
 sp.ultrawrite('/?')
 print(sp.ultraread())
