@@ -30,12 +30,12 @@ class Newserial(Serial):
         assert self.in_waiting == 0, "PORT NOT QUIESCENT"
         assert self.out_waiting == 0, "PORT NOT QUIESCENT"
         
-    def superwrite(self, wstr):
+    def ultrawrite(self, wstr):
         wb = bytes(wstr, encoding='ascii')
         self.write(wb+b'\r\n')
         sleep(PAUSE)        
         
-    def powerread(self):
+    def ultraread(self):
         rcd = bytes()
         while self.in_waiting > 0:
             while self.in_waiting > 0:
@@ -62,28 +62,28 @@ print('Test comms and valve...')
 print('... not yet using device ID ...')
 
 # try some comms
-sp.superwrite('/?')
-print(sp.powerread())
+sp.ultrawrite('/?')
+print(sp.ultraread())
 
-sp.superwrite('VR')
-print(sp.powerread())
+sp.ultrawrite('VR')
+print(sp.ultraread())
 
-sp.superwrite('VR1')
-print(sp.powerread())
+sp.ultrawrite('VR1')
+print(sp.ultraread())
 
-sp.superwrite('VR2')
-print(sp.powerread())
+sp.ultrawrite('VR2')
+print(sp.ultraread())
 
-sp.superwrite('CP')
-print(sp.powerread())
+sp.ultrawrite('CP')
+print(sp.ultraread())
 
-sp.superwrite('GOA')
-print(sp.powerread())
+sp.ultrawrite('GOA')
+print(sp.ultraread())
 
-sp.superwrite('CP')
-print(sp.powerread())
+sp.ultrawrite('CP')
+print(sp.ultraread())
 
-sp.superwrite('GOB')
-print(sp.powerread())
+sp.ultrawrite('GOB')
+print(sp.ultraread())
 
 sp.close()
