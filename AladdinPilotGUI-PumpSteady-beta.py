@@ -5,7 +5,8 @@ Created on Tue Jan 31 22:43:40 2023
 @author: Martinus Werts
 """
 
-from time import time,sleep
+import re
+from time import time, sleep
 
 import remi.gui as gui
 import remi
@@ -55,16 +56,14 @@ SCHEDULE_STEP = 1.0
 
 
 
-
 class AladdinPumpSteady(remi.App):
     def __init__(self, *args):
+        self.pump_reply_parse_re = re.compile(r"I(\d+\.?\d*)W(\d+\.?\d*)(UL|ML)")
         self.aladdin = None # this corresponds to unconnected Aladdin pump
         self.activated = False
-        self.injekted = False # flag to set if Injekt has been active (for checking true STOP condition)
         super(AladdinPumpSteady, self).__init__(*args)
 
     def main(self):
-        
         ### DEFINE GUI LAYOUT and WIDGETS
         cntr_main = gui.Container(width = 420, height = 560)
         
@@ -112,7 +111,7 @@ class AladdinPumpSteady(remi.App):
         vbox2 = gui.VBox(height = 120, width= 400, margin='10px')
         vbox2.css_border_style='solid'
         hbox21 = gui.HBox()
-        self.button211 = gui.Button('injekt',
+        self.button211 = gui.Button('pump',
                                     width=120, height=24, margin='10px')
         hbox21.append(self.button211)
         self.button212 = gui.Button('stop',
@@ -167,11 +166,12 @@ class AladdinPumpSteady(remi.App):
         
         #################################
         # SET EVENT HANDLERS
-        #TODO put all event handler initializations here, to be executed
+        # put all event handler initializations here, 
+        # to be executed
         # only when all widgets have been created
         self.button151.onclick.do(self.activate151)
         self.button152.onclick.do(self.deactivate152)
-        self.button211.onclick.do(self.injekt211)
+        self.button211.onclick.do(self.start211)
         self.button212.onclick.do(self.stop212)
         self.dmenu22.onchange.do(self.pumprate22)
         self.button41.onclick.do(self.close41)
@@ -183,60 +183,70 @@ class AladdinPumpSteady(remi.App):
     #### Event loop, idle activity
 
     def idle(self):
-        # HERE: monitor pump status if comms activated
-        # every second (schedule_next = schedule_next + 1)
-        #          while time > schedule_next:
-        #               schedule_next = schedule_next + schedule_step
+        # HERE: monitor pump status when pump activated
+        # every SCHEDULE_STEP seconds
         # update buttons color to reflect status
-        #   do not grey out buttons
-        
-        # TODO TODO TODO #TODO
-        #     We now use 'VOL' to stop the pump when volume obtained
-        #     The pump, indeed, stops when VOL reached
-        #     However, the program is not aware of this situation, and
-        #     pumping can be continued, simply by pressing Injekt
-        #     We should detected 'VOL' reached and actually completely deactivate
-        #      pump communications
-        #     This may be simple: when VOL is reached, pump status becomes 'S'
-        #      and not 'P' as in all other case????
-        
+        # check dispensed volume
         if self.activated:
             t1 = time()
             if t1 > self.next_sched:
-                # TODO get pump state (send-receive)
+                # get pump state 
                 pump_status, pump_reply = self.aladdin.pump_cmd(self.pumpid, 'DIS')
                 if pump_reply is None:
                     self.linewriter.writeln('GLITCH: pump comms lost')
                     pump_status = '?'
                 else:
+                    # TODO: the following information could be displayed in a box
+                    #   of its own? because it rapidly fills up the 'terminal' 
+                    #   text box
                     self.linewriter.writeln('status='+pump_status +
                                             '    reply='+pump_reply)
-                
-
-                if pump_status == 'W': # withdraw! => ERROR
-                    self.linewriter.writeln('ERROR: Withdraw activity detected. Stopping.')
-                    self.aladdin.pump_cmd(self.pumpid, 'STP')
-                elif pump_status == 'I':
-                    self.injekted = True #TODO: this is only updated in idle, should we make sure that it is updated more often??
-                    self.button211.css_background_color = "rgb(0,200,0)"
-                    self.button212.css_background_color = ""
-                    self.dmenu22.set_enabled(False) # cannot change RATE when injekting
-                elif pump_status == 'P':
-                    self.button211.css_background_color = ""
-                    self.button212.css_background_color = "rgb(220,0,0)"
-                    self.dmenu22.set_enabled(True) # OK to change RATE
-                elif self.injekted and pump_status == 'S': # status 'S' means that VOL limit has been reached
-                    #TODO TODO TODO: 'S' status is ambiguous: it is also reached when pressing STOP button twice
-                    # also: VOL dispense is relative to last 'STOP' status
-                    # remove self.injekted, put 'S' back with 'P'
-                    # AND CHECK DISPENSED VOLUME EXPLICITLY!! 
-                    self.linewriter.writeln('COMPLETE: syringe fill volume dispensed. deactivating.')
-                    self.linewriter.writeln('Change syringe.')
-                    self.deactivate()                    
-                else:
-                    self.button211.css_background_color = ""
-                    self.button212.css_background_color = ""
-                    
+                    # change UI buttons state to reflect pump state
+                    if pump_status == 'W': # withdraw! => ERROR
+                        self.linewriter.writeln('ERROR: Withdraw activity detected. Stopping.')
+                        self.aladdin.pump_cmd(self.pumpid, 'STP')
+                    elif pump_status == 'I':
+                        self.button211.css_background_color = "rgb(0,200,0)"
+                        self.button212.css_background_color = ""
+                        self.dmenu22.set_enabled(False) # cannot change RATE when pumping
+                    elif pump_status == 'P' or pump_status == 'S':
+                        self.button211.css_background_color = ""
+                        self.button212.css_background_color = "rgb(220,0,0)"
+                        self.dmenu22.set_enabled(True) # OK to change RATE
+                    else:
+                        self.button211.css_background_color = ""
+                        self.button212.css_background_color = ""
+                        
+                    # Check if total injected volume exceeds the initial fill volume
+                    # of the syringe.
+                    # Instead of relying entirely on the 'VOL' setting in the pump
+                    # controller (which stops the pump automatically), we explicitly
+                    # check here the injected volume. This is much safer, since
+                    # the 'VOL' dispense volume seems to be reset upon stopping
+                    # and restarting the pump, while the overall injected volume
+                    # reported by the pump is true to how much volume was injected
+                    # overal.
+                    # (1) decode pump_reply (using precompiled regex, which
+                    #      decomposes the useful information into groups)
+                    #      TODO: include this directly in aladdin.py
+                    prparse = self.pump_reply_parse_re.search(pump_reply)
+                    if prparse:
+                        injvol = float(prparse.group(1))
+                        # wdvol = float(prparse.group(2))
+                        units = prparse.group(3)
+                        if units==self.vol_units:
+                            if injvol >= self.volvalue:
+                                # END PUMPING!!
+                                self.linewriter.writeln('COMPLETE: syringe fill volume dispensed. deactivating.')
+                                self.linewriter.writeln('Change syringe.')
+                                self.deactivate()
+                            else:
+                                pass
+                                # business as usual (TODO: we could update display of injected volume
+                        else:
+                            self.linewriter.writeln('WARNING: pump VOL units do no match.')
+                    else:
+                        self.linewriter.writeln('WARNING: could not decode pump reply.')
 
 
                 # set time for next event
@@ -251,41 +261,27 @@ class AladdinPumpSteady(remi.App):
     
     def activate151(self, widget):
         self.activate()
-
-        
        
     def deactivate152(self, widget):
         #TODO dialogue: ARE YOU SURE?
         self.deactivate()
         self.linewriter.writeln('Pump comms deactivated')
 
-        
-
-    def injekt211(self, widget):
-        #TODO set pump rate? NO, multiple events of the same time give too busy comms?
-        self.linewriter.writeln('Injekt command')
-        self.dmenu22.set_enabled(False) # cannot change RATE when injekting
+    def start211(self, widget):
+        self.linewriter.writeln('Start pump command')
+        self.dmenu22.set_enabled(False) # cannot change RATE when pumping
         self.start_pump()
 
 
     def stop212(self, widget):
         self.linewriter.writeln('Stop command')
         self.stop_pump()
-        self.injekted = False # To avoid triggering VOL complete when pushing STOP twice
         self.dmenu22.set_enabled(True) # OK to change RATE
-
-        
-        
         
     def pumprate22(self, widget, value):
-        #TODO decode and send RATE command to pump
-        # or schedule new pump rate for next good occasion?? (is rate change possible without stopping?)
         self.pumpratestr = value
         self.linewriter.writeln('new pump rate: '+self.pumpratestr)
         self.updatepumprate()
-
-
-
         
     def close41(self, widget):
         closedialog = gui.GenericDialog('Please confirm',
@@ -385,7 +381,7 @@ class AladdinPumpSteady(remi.App):
             #TODO set initialization_OK to false if error
             for cmdstr in [
                     # step 1: prepare stopped pump
-                    'VER','VER','STP', # make sure pump communicating and stopped (to do check expected responses)
+                    'VER','VER','STP', # make sure pump communicating and stopped (todo check expected responses)
                     
                     # step 2: check preferences!
                     'PF',#todo if not OK, set value (THIS SHOULD BE 0, the pump should stop after power disruption)
@@ -432,6 +428,9 @@ class AladdinPumpSteady(remi.App):
        
         # if still OK then set VOL
         if initialization_OK:
+            # UI is always in ML, apply conversion to UL for pump if necessary
+            #  vol_units are the pump volume units
+            #  volvalue has the same units as pump units
             unitconv = 1000 if self.vol_units=='UL' else 1
             self.volvalue = float(self.spin14.get_value()) * unitconv
             # self.linewriter.writeln('volvalue = {0:.2f} {1:s}'\
@@ -447,7 +446,7 @@ class AladdinPumpSteady(remi.App):
                 self.linewriter.writeln('ERROR: Pump not responding (check port & pumpID)')
                 initialization_OK = False
             else:
-                #TO DO!!!! check if no pump error code
+                #TODO!!!! check if no pump error code
                 # setting an illegal volume returns a pump error!!
                 self.linewriter.writeln('    reply = '+ pump_reply+  
                                         '    status = '+pump_status)
@@ -465,7 +464,6 @@ class AladdinPumpSteady(remi.App):
             self.button212.set_enabled(True)
             self.dmenu22.set_enabled(True)
             self.next_sched = time() + SCHEDULE_STEP
-            self.injekted = False # reset injekted status
             self.activated = True
 
 
@@ -485,7 +483,7 @@ class AladdinPumpSteady(remi.App):
         # no checks yet, just send command and print return
         # WARNING for best performance, we should check and set pump rate
         # menu to the value reported back by the pump
-        # The pump rate can not be changed when Injekting
+        # The pump rate can not be changed when pumping
         self.linewriter.writeln('cmdstr = '+ cmdstr)
         if pump_reply is None:
             self.linewriter.writeln('ERROR: Pump not responding (check port & pumpID)')
