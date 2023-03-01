@@ -5,6 +5,7 @@ Created on Tue Jan 31 22:43:40 2023
 @author: Martinus Werts
 """
 
+import sys
 import re
 from time import time, sleep
 
@@ -21,7 +22,7 @@ from aladdin import serial
 
 # server IP address, port
 IP_ADDRESS = '0.0.0.0' #localhost
-IP_PORT = 8082 # make sure that every script has its own port!!
+IP_PORT = 9000 # make sure that every script has its own port!!
 
 # drop-down menu items and associated parameter strings
 # They are either simple lists (when the menu items are the strings)
@@ -30,7 +31,7 @@ IP_PORT = 8082 # make sure that every script has its own port!!
 # and the values will be the parameter strings to be sent to the functions
 # that configure the pump
 
-commports = ['COM7', 'COM8', 'COM9', 'COM10', 'COM11']
+commports = ['COM7', 'COM8', 'COM9', 'COM10']
 
 pumpIDs = ['01', '02', '03', '04']
 
@@ -117,7 +118,11 @@ class AladdinPumpSteady(remi.App):
         self.button212 = gui.Button('stop',
                                     width=120, height=24, margin='10px')
         hbox21.append(self.button212)
-        vbox2.append(hbox21)        
+        vbox2.append(hbox21)
+        
+        
+
+   
         hbox22 = gui.HBox()
         hbox22.append(gui.Label('pump rate', 
                                 width=80))
@@ -128,6 +133,11 @@ class AladdinPumpSteady(remi.App):
                                 width=60))    
         vbox2.append(hbox22)
         vbox_main.append(vbox2)
+
+
+        self.label4 = gui.Label('Pump comms inactive', width=320, height=20, margin='10px')
+        vbox_main.append(self.label4)
+
 
 
         vbox3 = gui.VBox(height = 160, width= 400, margin='10px')
@@ -196,11 +206,10 @@ class AladdinPumpSteady(remi.App):
                     self.linewriter.writeln('GLITCH: pump comms lost')
                     pump_status = '?'
                 else:
-                    # TODO: the following information could be displayed in a box
-                    #   of its own? because it rapidly fills up the 'terminal' 
-                    #   text box
-                    self.linewriter.writeln('status='+pump_status +
-                                            '    reply='+pump_reply)
+                    # self.linewriter.writeln('status='+pump_status +
+                    #                       '    reply='+pump_reply)
+                    self.label4.set_text('pump status: '+pump_status +
+                                            '     ---- volumes: '+pump_reply)
                     # change UI buttons state to reflect pump state
                     if pump_status == 'W': # withdraw! => ERROR
                         self.linewriter.writeln('ERROR: Withdraw activity detected. Stopping.')
@@ -330,6 +339,9 @@ class AladdinPumpSteady(remi.App):
         self.button212.set_enabled(False)
         self.dmenu22.set_enabled(False)
         
+        #
+        self.label4.set_text('Pump comms inactive')
+        
         # set 'deactivated' state
         self.activated = False
         
@@ -450,8 +462,7 @@ class AladdinPumpSteady(remi.App):
                 # setting an illegal volume returns a pump error!!
                 self.linewriter.writeln('    reply = '+ pump_reply+  
                                         '    status = '+pump_status)
-            
-       
+    
 
         # if OK then set pump control UI buttons color
         # if not OK then re-deactivate
@@ -497,12 +508,22 @@ class AladdinPumpSteady(remi.App):
     
 
 if __name__ == "__main__":
+    print('Hello.')
+    
+    if len(sys.argv) == 2:
+        # change IP_PORT from default value
+        IP_PORT = int(sys.argv[1])
+    
+    assert IP_PORT >= 8000, 'IP_PORT should be 8000 or beyond'
+    
     # starts the webserver
     # optional parameters
     # start(MyApp,address='127.0.0.1', port=8081, multiple_instance=False,enable_file_cache=True, update_interval=0.1, start_browser=True)
     print('running on {0:s}:{1:d}'.format(IP_ADDRESS, IP_PORT))
-    print('you should open your browser yourself')
-    remi.start(AladdinPumpSteady, debug=True, # debug set to false
+    # print('you should open your browser yourself')
+    remi.start(AladdinPumpSteady,
+               title='AladdinPilot {0:d}'.format(IP_PORT), 
+               debug=False, # debug set to false
                address=IP_ADDRESS, port=IP_PORT,
-               start_browser=False, 
+               start_browser=True, 
                multiple_instance=False) # multiple_instance set to false
