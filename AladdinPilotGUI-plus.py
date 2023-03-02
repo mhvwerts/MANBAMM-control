@@ -22,7 +22,7 @@ from aladdin import serial
 
 # server IP address, port
 IP_ADDRESS = '0.0.0.0' #localhost
-IP_PORT = 9000 # make sure that every script has its own port!!
+IP_PORT = 9500 # make sure that every script has its own port!!
 
 # drop-down menu items and associated parameter strings
 # They are either simple lists (when the menu items are the strings)
@@ -60,15 +60,106 @@ SCHEDULE_STEP = 1.0
 class AladdinPumpSteady(remi.App):
     def __init__(self, *args):
         self.pump_reply_parse_re = re.compile(r"I(\d+\.?\d*)W(\d+\.?\d*)(UL|ML)")
-        self.aladdin = None # this corresponds to unconnected Aladdin pump
-        self.activated = False
+
+        self.aladdin = None # this corresponds to unactivated Aladdin connection
+        self.activated = False # status of Aladdin communications
+
+        self.euha = None # this corresponds to unactivated VICI EUHA connection
+        self.euha_activated = False  # status of VICI EUHA communications
         super(AladdinPumpSteady, self).__init__(*args)
+
 
     def main(self):
         ### DEFINE GUI LAYOUT and WIDGETS
-        cntr_main = gui.Container(width = 420, height = 560)
+        
+        
+        global VICI_EUHA_MODE
+        # use a global variable to indicate whether to activate 'DOUBLE' mode
+        # (i.e. have room for VICI EUHA control)
+        
+        
+        if not VICI_EUHA_MODE:
+            containerw = 420
+        else:
+            containerw = 780
+        
+        cntr_main = gui.Container(width = containerw, height = 560)
+        
+        #DOUBLE
+        doublebox = gui.HBox()
+               
+                
+        if VICI_EUHA_MODE:
+            vbox_main2 = gui.VBox()
+            
+            vbox_main2.append(gui.Label('VICI EUHA valve',margin='10px'))
+            
+            m2_vbox1 = gui.VBox(height=120, width=320,margin='10px')
+            m2_vbox1.css_border_style='solid'
+                       
+            m2_hbox11 = gui.HBox()
+            m2_hbox11.append(gui.Label('comm. port', 
+                                    width=120))
+            self.m2_dmenu11 = gui.DropDown.new_from_list(commports, width=120)
+            m2_hbox11.append(self.m2_dmenu11)
+            m2_vbox1.append(m2_hbox11)
+            
+            m2_hbox15 = gui.HBox()
+            self.m2_button151 = gui.Button('activate',
+                                  width=100, height=24, margin='10px')
+
+            self.m2_button152 = gui.Button('deactivate',
+                                  width=100, height=24, margin='10px')
+            m2_hbox15.append([self.m2_button151,self.m2_button152])
+            m2_vbox1.append(m2_hbox15)
+
+            vbox_main2.append(m2_vbox1)
+            
+            
+
+            m2_vbox2 = gui.VBox(height = 100, width= 320, margin='10px')
+            m2_vbox2.css_border_style='solid'
+            m2_hbox21 = gui.HBox()
+            self.m2_button211 = gui.Button('pos. A',
+                                        width=120, height=24, 
+                                        margin='10px')
+            m2_hbox21.append(self.m2_button211)
+            self.m2_button212 = gui.Button('pos. B',
+                                        width=120, height=24, 
+                                        margin='10px')
+            m2_hbox21.append(self.m2_button212)
+            m2_vbox2.append(m2_hbox21)
+            
+            vbox_main2.append(m2_vbox2)
+            
+            
+            
+            self.m2_label4 = gui.Label('EUHA comms inactive', 
+                                    width=320, height=20, margin='10px')
+            self.m2_label4.css_border_style='solid'
+            vbox_main2.append(self.m2_label4)
+            
+            
+            
+            
+            m2_vbox3 = gui.VBox(height = 240, width= 320, margin='10px')
+            m2_vbox3.css_border_style='solid'
+
+            m2_vbox3.append(gui.Label('<under construction>'))
+            vbox_main2.append(m2_vbox3)
+            
+            
+            
+            
+            #DOUBLE
+            doublebox.append(vbox_main2)
+        
+        
+        
         
         vbox_main = gui.VBox()
+        
+        vbox_main.append(gui.Label('Aladdin syringe pump',margin='10px'))
         
         
         vbox1 = gui.VBox(height=140, width=400,margin='10px')
@@ -161,8 +252,16 @@ class AladdinPumpSteady(remi.App):
 
         vbox4.append(self.button41)
         vbox_main.append(vbox4)
-    
-        cntr_main.append(vbox_main)
+
+        #DOUBLE
+        doublebox.append(vbox_main)
+
+
+
+        #DOUBLE
+        #cntr_main.append(vbox_main)
+        cntr_main.append(doublebox)
+        
 
         ###########################
         # set default values (before event handlers active)
@@ -174,6 +273,8 @@ class AladdinPumpSteady(remi.App):
         ################################
         # INITIALIZE VALUES, SET STATEs 
         self.deactivate()
+        if VICI_EUHA_MODE:
+            self.euha_deactivate()
         
         
         #################################
@@ -187,6 +288,11 @@ class AladdinPumpSteady(remi.App):
         self.button212.onclick.do(self.stop212)
         self.dmenu22.onchange.do(self.pumprate22)
         self.button41.onclick.do(self.close41)
+        if VICI_EUHA_MODE:
+            self.m2_button151.onclick.do(self.m2_activate151)
+            self.m2_button152.onclick.do(self.m2_deactivate152)
+        
+        
         return cntr_main
 
 
@@ -504,6 +610,151 @@ class AladdinPumpSteady(remi.App):
             self.linewriter.writeln('    reply = '+ pump_reply+  
                                     '    status = '+pump_status)
             #self.linewriter.writeln('================')
+            
+            
+    ###################
+    ###################
+    ###################            
+    #### VICI EUHA functions
+    
+    ###################
+    #### EUHA EVENT HANDLERS
+    
+    def m2_activate151(self, widget):
+        self.euha_activate()
+        self.linewriter.writeln('EUHA activate')
+       
+    def m2_deactivate152(self, widget):
+        self.euha_deactivate()
+        self.linewriter.writeln('EUHA deactivate')
+            
+            
+    ####################
+    #### EUHA DEEPER FUNCTIONS
+    
+
+    def euha_deactivate(self):
+        if self.euha_activated:
+            print('euha_deactivate TODO 1!!')
+        if self.euha is not None: # a COM port is active
+            print('euha_deactivate TODO 2!!')
+            # stop everything (if activated)
+            # free COM port (destroy object?)
+            #TODO: UI should react immediately?
+            #    current the UI is only update after this handler exits.
+            #  
+            #   this will require re-programming =>
+            #    put all real pump action in the 'idle' via a message queue
+            self.euha.close()
+            sleep(ALADDIN_SHORTSLEEP) # give some time to close?
+            self.euha = None # unbind object
+
+        # put UI in 'deactivated' state
+        #self.button152.css_background_color = "rgb(255,0,0)"
+        self.m2_button151.css_background_color = ""
+        self.m2_button151.set_enabled(True)
+        self.m2_button152.set_enabled(False)
+        self.m2_dmenu11.set_enabled(True)
+        self.m2_button211.set_enabled(False)
+        self.m2_button212.set_enabled(False)
+
+        
+        #
+        self.m2_label4.set_text('EUHA comms inactive')
+        
+        # set 'deactivated' state
+        self.euha_activated = False
+        
+        
+    def euha_activate(self):
+        # enter transition between deactivate and activated state
+        self.m2_button151.css_background_color = "rgb(10,128,10)"
+        self.m2_button152.css_background_color = ""
+        self.m2_button151.set_enabled(False)
+        self.m2_dmenu11.set_enabled(False)
+
+        # get configuration from UI
+        self.linewriter.writeln('***EUHA CONFIGURATION***')
+        self.linewriter.writeln('comm port   :'+ self.m2_dmenu11.get_value())
+        self.linewriter.writeln('*******************')
+
+        initialization_OK = False
+        
+        # EUHA INITIALIZATION
+        # get configuration from UI (for real)
+        self.euha_port_str = self.m2_dmenu11.get_value()
+
+        
+        # 1. Open serial comms via Aladdin instance
+        assert self.euha == None, 'aladdin connection already existing? (should not happen)'
+
+        
+        if True:
+            print('TODO EUHA intialization phase 1')
+            initialization_OK = True
+        
+
+        # try:
+        #     self.aladdin = Aladdin(self.port_str)
+        #     self.linewriter.writeln('SUCCESS: serial comms port initialized.')
+        #     initialization_OK = True
+        # except serial.serialutil.SerialException:
+        #     self.linewriter.writeln('ERROR: Could not initialize serial comms port.')
+        #     initialization_OK = False
+        
+
+        
+        # 2. Initialization routine
+        # currently this is the basic sequence from aladdin-pilot2-dev3
+        if initialization_OK:
+            print('TODO EUHA intialization phase 2')
+            
+            # #TODO set initialization_OK to false if error
+            # for cmdstr in [
+            #         # step 1: prepare stopped pump
+            #         'VER','VER','STP', # make sure pump communicating and stopped (todo check expected responses)
+                    
+            #         # step 2: check preferences!
+            #         'PF',#todo if not OK, set value (THIS SHOULD BE 0, the pump should stop after power disruption)
+                    
+            #         # step 2: reset program
+            #         # overwrite current program with standard 'unprogrammed' operation
+            #         # I do not know how to delete steps from program via RS232
+            #         'PHN2','FUNSTP', # second phase stop pump 'end program?)
+            #         'PHN1','FUNRAT','VOL0.0', # first phase: infinite injection
+                    
+            #         # step 3: with the standard program in place, we can use pump as normal
+            #         aladdin_syringe_cmd, # select syringe diameter - this control units for VOL
+            #         'RAT'+self.pumpratestr+'UM', # rate
+            #         'DIRINF', # inject
+            #         'CLDINF', # clear dispensed volume (inject)
+            #         ]:
+            #     #self.linewriter.writeln('===============')
+            #     self.linewriter.writeln('cmdstr = '+ cmdstr)
+            #     pump_status, pump_reply = self.aladdin.pump_cmd(self.pumpid, cmdstr)
+            #     if pump_reply is None:
+            #         self.linewriter.writeln('ERROR: Pump not responding (check port & pumpID)')
+            #         initialization_OK = False
+            #         break
+            #     else:
+            #         self.linewriter.writeln('    reply = '+ pump_reply+  
+            #                                 '    status = '+pump_status)
+            #         #self.linewriter.writeln('================')
+
+
+   
+
+        # if OK then set pump control UI buttons color
+        # if not OK then re-deactivate
+        if not initialization_OK:
+            self.euha_deactivate()
+        else:
+            # fully enter 'activated' state
+            self.m2_button152.set_enabled(True)
+            self.m2_button211.set_enabled(True)
+            self.m2_button212.set_enabled(True)
+            self.euha_activated = True
+            
         
         
 
@@ -512,11 +763,26 @@ class AladdinPumpSteady(remi.App):
 if __name__ == "__main__":
     print('Hello.')
     
+    
+    
     if len(sys.argv) == 2:
         # change IP_PORT from default value
         IP_PORT = int(sys.argv[1])
     
     assert IP_PORT >= 8000, 'IP_PORT should be 8000 or beyond'
+    
+    
+    #TODO further decode IP_PORT 
+    # and set configuration accordingly
+    
+    if IP_PORT < 9500:
+        VICI_EUHA_MODE = False
+    else:
+        VICI_EUHA_MODE = True
+    
+
+    
+    
     
     # starts the webserver
     # optional parameters
