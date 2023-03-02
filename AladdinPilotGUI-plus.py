@@ -17,6 +17,8 @@ from remi_extras import LineWriterBox
 from aladdin import Aladdin
 from aladdin import serial
 
+from vici_euha import VICI_EUHA
+
 ####
 # configuration settings, to be externalised to a configuration file/module
 
@@ -51,6 +53,9 @@ ALADDIN_SHORTSLEEP = 0.2
 
 # UI update schedule
 SCHEDULE_STEP = 1.0
+
+# Default rest position for EUHA valve
+EUHA_REST_POSITION = 'B'
 
 
 ####
@@ -500,7 +505,6 @@ class AladdinPumpSteady(remi.App):
         # 2. Initialization routine
         # currently this is the basic sequence from aladdin-pilot2-dev3
         if initialization_OK:
-            #TODO set initialization_OK to false if error
             for cmdstr in [
                     # step 1: prepare stopped pump
                     'VER','VER','STP', # make sure pump communicating and stopped (todo check expected responses)
@@ -647,20 +651,13 @@ class AladdinPumpSteady(remi.App):
 
     def euha_deactivate(self):
         if self.euha_activated:
-            print('euha_deactivate TODO 1!!')
+            self.euha.set_pos(EUHA_REST_POSITION)
+            assert self.euha.get_pos()=='B', 'Something very wrong with EUHA Valve... cannot move'
+
+        # set 'deactivated' state
+        self.euha_activated = False
+
         if self.euha is not None: # a COM port is active
-            print('euha_deactivate TODO 2!!')
-            
-            print('TODO: move to Valve Default Position (Pos. B) - see elsewhere')
-            
-            
-            # stop everything (if activated)
-            # free COM port (destroy object?)
-            #TODO: UI should react immediately?
-            #    current the UI is only update after this handler exits.
-            #  
-            #   this will require re-programming =>
-            #    put all real pump action in the 'idle' via a message queue
             self.euha.close()
             sleep(ALADDIN_SHORTSLEEP) # give some time to close?
             self.euha = None # unbind object
@@ -674,12 +671,9 @@ class AladdinPumpSteady(remi.App):
         self.m2_button211.set_enabled(False)
         self.m2_button212.set_enabled(False)
 
-        
-        #
         self.m2_label4.set_text('EUHA comms inactive')
         
-        # set 'deactivated' state
-        self.euha_activated = False
+
         
         
     def euha_activate(self):
@@ -694,7 +688,7 @@ class AladdinPumpSteady(remi.App):
         self.linewriter.writeln('comm port   :'+ self.m2_dmenu11.get_value())
         self.linewriter.writeln('*******************')
 
-        initialization_OK = False
+
         
         # EUHA INITIALIZATION
         # get configuration from UI (for real)
@@ -702,65 +696,24 @@ class AladdinPumpSteady(remi.App):
 
         
         # 1. Open serial comms via Aladdin instance
-        assert self.euha == None, 'aladdin connection already existing? (should not happen)'
+        assert self.euha == None, 'EUHA connection already existing? (should not happen)'
 
-        
-        if True:
-            print('TODO EUHA intialization phase 1')
+        initialization_OK = False
+      
+        try:
+            self.euha = VICI_EUHA(self.euha_port_str)
             initialization_OK = True
+        except Exception as ex:
+            self.linewriter.writeln('EUHA init error: '+str(ex))
+            self.euha = None
+            initialization_OK = False
         
-
-        # try:
-        #     self.aladdin = Aladdin(self.port_str)
-        #     self.linewriter.writeln('SUCCESS: serial comms port initialized.')
-        #     initialization_OK = True
-        # except serial.serialutil.SerialException:
-        #     self.linewriter.writeln('ERROR: Could not initialize serial comms port.')
-        #     initialization_OK = False
-        
-
         
         # 2. Initialization routine
-        # currently this is the basic sequence from aladdin-pilot2-dev3
         if initialization_OK:
-            print('TODO EUHA intialization phase 2')
-            
-            print('TODO: move to Valve Default Position (Pos. B)')
-            
-            # #TODO set initialization_OK to false if error
-            # for cmdstr in [
-            #         # step 1: prepare stopped pump
-            #         'VER','VER','STP', # make sure pump communicating and stopped (todo check expected responses)
-                    
-            #         # step 2: check preferences!
-            #         'PF',#todo if not OK, set value (THIS SHOULD BE 0, the pump should stop after power disruption)
-                    
-            #         # step 2: reset program
-            #         # overwrite current program with standard 'unprogrammed' operation
-            #         # I do not know how to delete steps from program via RS232
-            #         'PHN2','FUNSTP', # second phase stop pump 'end program?)
-            #         'PHN1','FUNRAT','VOL0.0', # first phase: infinite injection
-                    
-            #         # step 3: with the standard program in place, we can use pump as normal
-            #         aladdin_syringe_cmd, # select syringe diameter - this control units for VOL
-            #         'RAT'+self.pumpratestr+'UM', # rate
-            #         'DIRINF', # inject
-            #         'CLDINF', # clear dispensed volume (inject)
-            #         ]:
-            #     #self.linewriter.writeln('===============')
-            #     self.linewriter.writeln('cmdstr = '+ cmdstr)
-            #     pump_status, pump_reply = self.aladdin.pump_cmd(self.pumpid, cmdstr)
-            #     if pump_reply is None:
-            #         self.linewriter.writeln('ERROR: Pump not responding (check port & pumpID)')
-            #         initialization_OK = False
-            #         break
-            #     else:
-            #         self.linewriter.writeln('    reply = '+ pump_reply+  
-            #                                 '    status = '+pump_status)
-            #         #self.linewriter.writeln('================')
-
-
-   
+            self.euha.set_pos(EUHA_REST_POSITION)
+            assert self.euha.get_pos()=='B', 'Something very wrong with EUHA Valve... cannot move'
+           
 
         # if OK then set pump control UI buttons color
         # if not OK then re-deactivate
@@ -772,10 +725,11 @@ class AladdinPumpSteady(remi.App):
             self.m2_button211.set_enabled(True)
             self.m2_button212.set_enabled(True)
             self.euha_activated = True
-            
+            self.linewriter.writeln('EUHA valve comms successfully activated!')
+            self.linewriter.writeln('EUHA valve position: '+self.euha.get_pos())
             
     def euha_posA(self):
-        print('TODO: euha_posA')
+        print('TODO: euha_posA // INCLUDE regular position update in idle loop')
         
     def euha_posB(self):
         print('TODO: euha_posB')
@@ -795,7 +749,7 @@ if __name__ == "__main__":
     assert IP_PORT >= 8000, 'IP_PORT should be 8000 or beyond'
     
     
-    #TODO further decode IP_PORT 
+    # further decode IP_PORT 
     # and set configuration accordingly
     
     if IP_PORT < 9500:
