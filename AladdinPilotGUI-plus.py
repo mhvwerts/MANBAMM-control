@@ -291,6 +291,8 @@ class AladdinPumpSteady(remi.App):
         if VICI_EUHA_MODE:
             self.m2_button151.onclick.do(self.m2_activate151)
             self.m2_button152.onclick.do(self.m2_deactivate152)
+            self.m2_button211.onclick.do(self.m2_euha_posA_211)
+            self.m2_button212.onclick.do(self.m2_euha_posB_212)
         
         
         return cntr_main
@@ -621,13 +623,23 @@ class AladdinPumpSteady(remi.App):
     #### EUHA EVENT HANDLERS
     
     def m2_activate151(self, widget):
-        self.euha_activate()
         self.linewriter.writeln('EUHA activate')
+        self.euha_activate()
+
        
     def m2_deactivate152(self, widget):
-        self.euha_deactivate()
         self.linewriter.writeln('EUHA deactivate')
-            
+        self.euha_deactivate()
+
+    def m2_euha_posA_211(self, widget):
+        self.linewriter.writeln('EUHA pos. A command')
+        self.euha_posA()
+
+    def m2_euha_posB_212(self, widget):
+        self.linewriter.writeln('EUHA pos. B command')
+        self.euha_posB()
+
+
             
     ####################
     #### EUHA DEEPER FUNCTIONS
@@ -638,6 +650,10 @@ class AladdinPumpSteady(remi.App):
             print('euha_deactivate TODO 1!!')
         if self.euha is not None: # a COM port is active
             print('euha_deactivate TODO 2!!')
+            
+            print('TODO: move to Valve Default Position (Pos. B) - see elsewhere')
+            
+            
             # stop everything (if activated)
             # free COM port (destroy object?)
             #TODO: UI should react immediately?
@@ -709,6 +725,8 @@ class AladdinPumpSteady(remi.App):
         if initialization_OK:
             print('TODO EUHA intialization phase 2')
             
+            print('TODO: move to Valve Default Position (Pos. B)')
+            
             # #TODO set initialization_OK to false if error
             # for cmdstr in [
             #         # step 1: prepare stopped pump
@@ -755,7 +773,12 @@ class AladdinPumpSteady(remi.App):
             self.m2_button212.set_enabled(True)
             self.euha_activated = True
             
+            
+    def euha_posA(self):
+        print('TODO: euha_posA')
         
+    def euha_posB(self):
+        print('TODO: euha_posB')
         
 
     
