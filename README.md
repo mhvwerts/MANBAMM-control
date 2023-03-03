@@ -16,7 +16,7 @@ The library depends on non-standard packages which are listed in `requirements.t
 conda install --file requirements.txt                        
 ```
 
-For GUI development, we use [`Remi`](https://github.com/rawpython/remi). This is a very lightweight, platform-independent library that uses a web-browser for the graphical interface (via HTML5/CSS/JavaScript) with the application that running as a web-server in Python. Very clever! No large framework to be installed. We make small extensions to this library (modified widgets, etc.), collected in `remi_extras.py`
+For GUI development, we use [`Remi`](https://github.com/rawpython/remi). This is a very lightweight, platform-independent library that uses a web-browser for the graphical interface (via HTML5/CSS/JavaScript) with the actual application running as a web-server in Python. Very clever! No large framework to be installed. We make small extensions to this library (modified widgets, etc.), collected in `remi_extras.py`
 
 
 ## Equipment list
