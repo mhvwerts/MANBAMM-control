@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jan 31 22:43:40 2023
-
-@author: Martinus Werts
+This script is precursor to the "plus" version, and is now obsolete.
+It does not include the optional VICI EUHA valve control mode of the
+"plus" version
 """
 
 import sys

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jan 31 22:43:40 2023
+GUI for control of an Aladdin pump with the option to simultaneously
+control a VICI EUHA motorized valve.
 
-@author: Martinus Werts
+The GUI is implemented in with Remi, and may be remote via TCP/IP
 """
 
 import sys

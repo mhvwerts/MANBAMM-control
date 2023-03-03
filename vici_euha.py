@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-A first example of VICI EUHA control via RS232
+VICI EUHA control via RS232
+
+This  is the VICI EUHA control module, easy to import and use, much like `aladdin.py`
 
 A child class 'Newserial' is created from 'Serial' (pyserial) to facilitate communications with the VICI EUHA interface, in particular handling ASCII conversion and CRLF handling.
-
-This prototype script will evolve into a VICI EUHA control module, easy to import and use, much like `aladdin.py`
-
-To do:
-- put the vici_euha control into a class of its own
 
 """
 from time import sleep
