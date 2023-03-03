@@ -8,6 +8,7 @@ Created on Tue Jan 31 22:43:40 2023
 import sys
 import re
 from time import time, sleep
+from datetime import datetime
 
 import remi.gui as gui
 import remi
@@ -24,7 +25,7 @@ from vici_euha import VICI_EUHA
 
 # server IP address, port
 IP_ADDRESS = '0.0.0.0' #localhost
-IP_PORT = 9500 # make sure that every script has its own port!!
+IP_PORT = 9001 # make sure that every instance has its own port!!
 
 # drop-down menu items and associated parameter strings
 # They are either simple lists (when the menu items are the strings)
@@ -51,15 +52,23 @@ pumprates = ['0.5', '1.0', '2.0', '5.0', '10.0', '20.0', '50.0']
 ALADDIN_LONGSLEEP = 1.0
 ALADDIN_SHORTSLEEP = 0.2
 
-# UI update schedule
-SCHEDULE_STEP = 1.0
+# UI update schedule - used in idle(self)
+SCHEDULE_STEP = 1.0 # in seconds
+EUHA_SCHEDULE_STEP = 1.0 # in seconds
 
 # Default rest position for EUHA valve
 EUHA_REST_POSITION = 'B'
 
 
 ####
+# Utility functions
 
+def isotimestr():
+    return datetime.now().isoformat().split('.')[0]
+
+
+
+####
 
 
 class AladdinPumpSteady(remi.App):
@@ -68,9 +77,12 @@ class AladdinPumpSteady(remi.App):
 
         self.aladdin = None # this corresponds to unactivated Aladdin connection
         self.activated = False # status of Aladdin communications
+        self.next_sched = 0.0 # just to initialize (contains time of next scheduled aladdin idle loop event)
 
         self.euha = None # this corresponds to unactivated VICI EUHA connection
         self.euha_activated = False  # status of VICI EUHA communications
+        self.euha_next_sched = 0.0 
+        
         super(AladdinPumpSteady, self).__init__(*args)
 
 
@@ -231,7 +243,7 @@ class AladdinPumpSteady(remi.App):
         vbox_main.append(vbox2)
 
 
-        self.label4 = gui.Label('Pump comms inactive', 
+        self.label4 = gui.Label('Aladdin pump comms inactive', 
                                 width=360, height=20, margin='10px')
         self.label4.css_border_style='solid'
         vbox_main.append(self.label4)
@@ -308,6 +320,8 @@ class AladdinPumpSteady(remi.App):
     #### Event loop, idle activity
 
     def idle(self):
+        global VICI_EUHA_MODE
+        
         # HERE: monitor pump status when pump activated
         # every SCHEDULE_STEP seconds
         # update buttons color to reflect status
@@ -318,7 +332,7 @@ class AladdinPumpSteady(remi.App):
                 # get pump state 
                 pump_status, pump_reply = self.aladdin.pump_cmd(self.pumpid, 'DIS')
                 if pump_reply is None:
-                    self.linewriter.writeln('GLITCH: pump comms lost')
+                    self.linewriter.writeln('GLITCH: Aladdin comms lost')
                     pump_status = '?'
                 else:
                     # self.linewriter.writeln('status='+pump_status +
@@ -376,6 +390,29 @@ class AladdinPumpSteady(remi.App):
                 # set time for next event
                 while t1 > self.next_sched: # fast forward if necessary, do not execute missed events, but keep rhythm!
                     self.next_sched = self.next_sched + SCHEDULE_STEP
+                    
+        if VICI_EUHA_MODE and self.euha_activated: # the VICI_EUHA_MODE is redundant, in principle
+            t2 = time()
+            if t2 > self.euha_next_sched:
+                pos = self.euha.get_pos()
+                self.m2_label4.set_text(isotimestr()+\
+                                        ' - EUHA active. pos='+pos)
+                if pos == 'A':
+                    self.m2_button211.css_background_color = "rgb(0,200,0)"
+                    self.m2_button212.css_background_color = ""
+                elif pos == 'B':
+                    self.m2_button211.css_background_color = ""
+                    self.m2_button212.css_background_color = "rgb(0,200,0)"
+                else:
+                    self.m2_button211.css_background_color = ""
+                    self.m2_button212.css_background_color = ""
+                    
+                # set time for next event
+                while t2 > self.euha_next_sched: # fast forward if necessary, do not execute missed events, but keep rhythm!
+                    self.euha_next_sched = self.euha_next_sched + SCHEDULE_STEP                
+                
+
+        
             
 
 
@@ -389,7 +426,7 @@ class AladdinPumpSteady(remi.App):
     def deactivate152(self, widget):
         #TODO dialogue: ARE YOU SURE?
         self.deactivate()
-        self.linewriter.writeln('Pump comms deactivated')
+        self.linewriter.writeln('Aladdin pump comms deactivated')
 
     def start211(self, widget):
         self.linewriter.writeln('Start pump command')
@@ -417,6 +454,7 @@ class AladdinPumpSteady(remi.App):
         print('Application is being terminated')
         #stop pump deactivate comms
         # enter deactivated state
+        self.euha_deactivate()
         self.deactivate()
         sleep(ALADDIN_LONGSLEEP) 
         self.close()
@@ -455,7 +493,7 @@ class AladdinPumpSteady(remi.App):
         self.dmenu22.set_enabled(False)
         
         #
-        self.label4.set_text('Pump comms inactive')
+        self.label4.set_text('Aladdin pump comms inactive')
         
         # set 'deactivated' state
         self.activated = False
@@ -526,7 +564,16 @@ class AladdinPumpSteady(remi.App):
                     ]:
                 #self.linewriter.writeln('===============')
                 self.linewriter.writeln('cmdstr = '+ cmdstr)
-                pump_status, pump_reply = self.aladdin.pump_cmd(self.pumpid, cmdstr)
+                try:
+                    pump_status, pump_reply = self.aladdin.pump_cmd(self.pumpid, cmdstr)
+                except AssertionError:
+                    # during initialization, apparent comm errors can occur
+                    # if trying to communicate with a connected device that is
+                    # not an Aladdin pump!
+                    # In that case, we conclude that we are not communicating
+                    # with an Aladdin pump
+                    print('Unexpected reply from connected device (not an Aladdin pump)')
+                    pump_reply = None
                 if pump_reply is None:
                     self.linewriter.writeln('ERROR: Pump not responding (check port & pumpID)')
                     initialization_OK = False
@@ -577,7 +624,6 @@ class AladdinPumpSteady(remi.App):
                 self.linewriter.writeln('    reply = '+ pump_reply+  
                                         '    status = '+pump_status)
     
-
         # if OK then set pump control UI buttons color
         # if not OK then re-deactivate
         if not initialization_OK:
@@ -627,20 +673,20 @@ class AladdinPumpSteady(remi.App):
     #### EUHA EVENT HANDLERS
     
     def m2_activate151(self, widget):
-        self.linewriter.writeln('EUHA activate')
+        self.linewriter.writeln(isotimestr()+' EUHA activate')
         self.euha_activate()
 
        
     def m2_deactivate152(self, widget):
-        self.linewriter.writeln('EUHA deactivate')
+        self.linewriter.writeln(isotimestr()+' EUHA deactivate')
         self.euha_deactivate()
 
     def m2_euha_posA_211(self, widget):
-        self.linewriter.writeln('EUHA pos. A command')
+        self.linewriter.writeln(isotimestr()+' EUHA pos. A')
         self.euha_posA()
 
     def m2_euha_posB_212(self, widget):
-        self.linewriter.writeln('EUHA pos. B command')
+        self.linewriter.writeln(isotimestr()+' EUHA pos. B')
         self.euha_posB()
 
 
@@ -725,14 +771,15 @@ class AladdinPumpSteady(remi.App):
             self.m2_button211.set_enabled(True)
             self.m2_button212.set_enabled(True)
             self.euha_activated = True
+            self.euha_next_sched = time() + EUHA_SCHEDULE_STEP
             self.linewriter.writeln('EUHA valve comms successfully activated!')
             self.linewriter.writeln('EUHA valve position: '+self.euha.get_pos())
             
     def euha_posA(self):
-        print('TODO: euha_posA // INCLUDE regular position update in idle loop')
+        self.euha.set_pos('A')
         
     def euha_posB(self):
-        print('TODO: euha_posB')
+        self.euha.set_pos('B')
         
 
     
@@ -752,10 +799,13 @@ if __name__ == "__main__":
     # further decode IP_PORT 
     # and set configuration accordingly
     
+    # TODO: each specific port number could correspond to a custom configuration
+    # limiting choices for pumpID etc. such that no mix-ups occur
+    
     if IP_PORT < 9500:
-        VICI_EUHA_MODE = False
-    else:
         VICI_EUHA_MODE = True
+    else:
+        VICI_EUHA_MODE = False
     
 
     
