@@ -26,7 +26,7 @@ from vici_euha import VICI_EUHA
 
 # server IP address, port
 IP_ADDRESS = '0.0.0.0' #localhost
-IP_PORT = 9001 # make sure that every instance has its own port!!
+IP_PORT = 9501 # make sure that every instance has its own port!!
 
 # drop-down menu items and associated parameter strings
 # They are either simple lists (when the menu items are the strings)
@@ -35,15 +35,16 @@ IP_PORT = 9001 # make sure that every instance has its own port!!
 # and the values will be the parameter strings to be sent to the functions
 # that configure the pump
 
-commports = ['COM7', 'COM8', 'COM9', 'COM10']
+commports = ['COM5', 'COM6', 'COM7', 'COM8']
 
-pumpIDs = ['01', '02', '03', '04']
+pumpIDs = ['03', '04']
 
 syringetype_items = {'SGE100µl (1.456mm)': 'DIA1.456',
                      'SGE250µl (2.303mm)': 'DIA2.303',
                      'SGE500µl (3.257mm)': 'DIA3.257',
                      '2 ml (9.537mm)': 'DIA9.537',
                      '5 ml (12.62mm)': 'DIA12.62',
+                     '10 ml (15.96mm)': 'DIA15.96',
                      '20 ml (20.10mm)': 'DIA20.10'}
 syringetypes = list(syringetype_items.keys())
 
@@ -455,7 +456,8 @@ class AladdinPumpSteady(remi.App):
         print('Application is being terminated')
         #stop pump deactivate comms
         # enter deactivated state
-        self.euha_deactivate()
+        if VICI_EUHA_MODE:
+            self.euha_deactivate()
         self.deactivate()
         sleep(ALADDIN_LONGSLEEP) 
         self.close()
