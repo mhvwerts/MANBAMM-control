@@ -26,7 +26,7 @@ from vici_euha import VICI_EUHA
 
 # server IP address, port
 IP_ADDRESS = '0.0.0.0' #localhost
-IP_PORT = 9001 # make sure that every instance has its own port!!
+IP_PORT = 9003 # make sure that every instance has its own port!!
 
 # drop-down menu items and associated parameter strings
 # They are either simple lists (when the menu items are the strings)
@@ -67,8 +67,8 @@ EUHA_FILL_POSITION = 'A'
 
 # minimal injection duration for program automation mode 
 PROG_INJEKT_MIN = 1.0
-print('do not forget to restore PROG_UI_TO_SECONDS')
-PROG_UI_TO_SECONDS = 10 # UI value is in minutes
+PROG_PRE_ROLL_S = 10. # number of seconds to first pre-fill
+PROG_UI_TO_SECONDS = 60 # UI value is in minutes
 
 ####
 # Utility functions
@@ -612,8 +612,7 @@ class AladdinPumpSteady(remi.App):
         
         # initialize program
         self.prog_step = 0
-        Tnext = t0+PROG_UI_TO_SECONDS*(self.prog_period-(self.prog_prefill+\
-                                             self.prog_fill+self.prog_postfill))
+        Tnext = t0+PROG_PRE_ROLL_S
         self.prog_Tnext = Tnext
         self.program_running = True
         
@@ -989,10 +988,10 @@ if __name__ == "__main__":
     # optional parameters
     # start(MyApp,address='127.0.0.1', port=8081, multiple_instance=False,enable_file_cache=True, update_interval=0.1, start_browser=True)
     print('running on {0:s}:{1:d}'.format(IP_ADDRESS, IP_PORT))
-    print('you should open your browser yourself')
+    # print('you should open your browser yourself')
     remi.start(AladdinPumpSteady,
                title='AladdinPilot {0:d}'.format(IP_PORT), 
                debug=False, # debug set to false
                address=IP_ADDRESS, port=IP_PORT,
-               start_browser=False, 
+               start_browser=True, 
                multiple_instance=False) # multiple_instance set to false
