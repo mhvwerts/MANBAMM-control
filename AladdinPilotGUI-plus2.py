@@ -521,6 +521,8 @@ class AladdinPumpSteady(remi.App):
                     
                     self.prog_logfile.write(isostamp(t3)+'\t'+\
                                             'INJEKT'+'\n')
+                    self.prog_logfile.flush() # Flush so that the injection event is directly written to disk    
+                        
                     self.prog_Tnext = self.prog_Tnext +\
                         PROG_UI_TO_SECONDS*(self.prog_period-(self.prog_prefill+\
                             self.prog_fill+self.prog_postfill))
@@ -587,6 +589,8 @@ class AladdinPumpSteady(remi.App):
         self.prog_prefill = float(self.m2_spin32.get_value())
         self.prog_fill = float(self.m2_spin33.get_value())
         self.prog_postfill = float(self.m2_spin34.get_value())
+        
+        
 
     def m2_runprog351(self, widget):
         if self.program_running:
@@ -595,6 +599,8 @@ class AladdinPumpSteady(remi.App):
         if (self.aladdin is None) or (self.euha is None):
             self.linewriter.writeln('Activate both Aladdin and VICI EUHA...')
             return
+        
+        
         self.linewriter.writeln('RUN PROGRAM')
         
         self.aladdin.pump_cmd(self.pumpid, 'STP')
@@ -609,6 +615,8 @@ class AladdinPumpSteady(remi.App):
    datetime.fromtimestamp(t0).strftime('%y%m%d_%H%M%S')+'.txt'
         self.prog_logfile = open(logfname, 'w')
         
+        # Set UI button to active (Green)
+        self.m2_button351.css_background_color = "rgb(10,128,10)"
         
         # initialize program
         self.prog_step = 0
@@ -631,6 +639,9 @@ class AladdinPumpSteady(remi.App):
         self.aladdin.pump_cmd(self.pumpid, 'STP')
         self.euha.set_pos(EUHA_REST_POSITION)
         self.linewriter.writeln('pump stopped. valve in rest position')
+        
+        # Set UI button to inactive (default colour)
+        self.m2_button351.css_background_color = ""
     
     ####################
     #### DEEPER FUNCTIONS
@@ -889,6 +900,9 @@ class AladdinPumpSteady(remi.App):
         self.m2_dmenu11.set_enabled(True)
         self.m2_button211.set_enabled(False)
         self.m2_button212.set_enabled(False)
+        
+        self.m2_button351.set_enabled(False)
+        self.m2_button352.set_enabled(False)
 
         self.m2_label4.set_text('EUHA comms inactive')
         
@@ -943,6 +957,10 @@ class AladdinPumpSteady(remi.App):
             self.m2_button152.set_enabled(True)
             self.m2_button211.set_enabled(True)
             self.m2_button212.set_enabled(True)
+                    
+            self.m2_button351.set_enabled(True)
+            self.m2_button352.set_enabled(True)
+            
             self.euha_activated = True
             self.euha_next_sched = time() + EUHA_SCHEDULE_STEP
             self.linewriter.writeln('EUHA valve comms successfully activated!')
