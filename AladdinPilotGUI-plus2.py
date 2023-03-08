@@ -616,7 +616,7 @@ class AladdinPumpSteady(remi.App):
         self.prog_logfile = open(logfname, 'w')
         
         # Set UI button to active (Green)
-        self.m2_button351.css_background_color = "rgb(10,128,10)"
+        self.m2_button351.css_background_color = "rgb(0,200,0)"
         
         # initialize program
         self.prog_step = 0
@@ -684,7 +684,7 @@ class AladdinPumpSteady(remi.App):
         
     def activate(self):
         # enter transition between deactivate and activated state
-        self.button151.css_background_color = "rgb(10,128,10)"
+        self.button151.css_background_color = "rgb(0,200,0)"
         self.button152.css_background_color = ""
         self.button151.set_enabled(False)
         self.dmenu11.set_enabled(False)
@@ -911,7 +911,7 @@ class AladdinPumpSteady(remi.App):
         
     def euha_activate(self):
         # enter transition between deactivate and activated state
-        self.m2_button151.css_background_color = "rgb(10,128,10)"
+        self.m2_button151.css_background_color = "rgb(0,200,0)"
         self.m2_button152.css_background_color = ""
         self.m2_button151.set_enabled(False)
         self.m2_dmenu11.set_enabled(False)
