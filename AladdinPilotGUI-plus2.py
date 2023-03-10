@@ -97,6 +97,9 @@ class AladdinPumpSteady(remi.App):
         
         self.program_running = False
         
+        # set number of program cycles TODO: set this in UI!!!
+        self.program_maxcycles = 5 # 0 = indefinitely
+        
         super(AladdinPumpSteady, self).__init__(*args)
 
 
@@ -515,7 +518,7 @@ class AladdinPumpSteady(remi.App):
                 elif self.prog_step==3:
                     self.prog_step=0
                     
-                    self.linewriter.writeln('PROGRAM EVENT: *** INJEKT and restart ***')
+                    self.linewriter.writeln('PROGRAM EVENT: *** INJEKT and return to initial state ***')
                     self.euha.set_pos(EUHA_REST_POSITION)
                     # self.aladdin.pump_cmd(self.pumpid, 'STP')
                     
@@ -528,6 +531,19 @@ class AladdinPumpSteady(remi.App):
                             self.prog_fill+self.prog_postfill))
                     self.linewriter.writeln('next event (pre-fill): '+\
     datetime.fromtimestamp(self.prog_Tnext).isoformat().split('T')[1])
+                        
+                    # complete cycle
+                    # max number of cycles
+                    self.program_cycles += 1
+                    if (self.program_maxcycles > 0)\
+                           and (self.program_cycles >= self.program_maxcycles):
+                        # end program
+                        t4 = time()
+                        self.prog_logfile.write(isostamp(t4)+'\t'+\
+                                                'Number of cycles reached. Ending program.'+'\n')
+                        # the following should work
+                        self.m2_stopprog352(None)   
+                    
                     
             
         
@@ -617,6 +633,13 @@ class AladdinPumpSteady(remi.App):
         
         # Set UI button to active (Green)
         self.m2_button351.css_background_color = "rgb(0,200,0)"
+        
+        # max number of cycles
+        self.program_cycles = 0
+        ## self.program_maxcycles = 0 # TODO get from UI (for now defined in __init__)
+        self.linewriter.writeln('number of cycles: {0:d} !!! '\
+                                'TO DO make UI Spinbox to set value !!!'\
+                                    .format(self.program_maxcycles))
         
         # initialize program
         self.prog_step = 0
