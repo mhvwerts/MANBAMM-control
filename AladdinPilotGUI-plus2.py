@@ -26,7 +26,7 @@ from vici_euha import VICI_EUHA
 
 # server IP address, port
 IP_ADDRESS = '0.0.0.0' #localhost
-IP_PORT = 9003 # make sure that every instance has its own port!!
+IP_PORT = 9013 # make sure that every instance has its own port!!
 
 # drop-down menu items and associated parameter strings
 # They are either simple lists (when the menu items are the strings)
@@ -35,9 +35,9 @@ IP_PORT = 9003 # make sure that every instance has its own port!!
 # and the values will be the parameter strings to be sent to the functions
 # that configure the pump
 
-commports = ['COM5', 'COM6', 'COM7', 'COM8']
+commports = ['COM10', 'COM11', 'COM12', 'COM13']
 
-pumpIDs = ['03', '04']
+pumpIDs = ['01', '02']
 
 syringetype_items = {'SGE100µl (1.456mm)': 'DIA1.456',
                      'SGE250µl (2.303mm)': 'DIA2.303',

@@ -58,9 +58,18 @@ class VICI_EUHA:
         
         # check communications by sending a command and checking expected
         # response
-        if not(self.sendrecv('VR')[-10:]=='UA_MAIN_EQ'):
+        VRresponse = self.sendrecv('VR')
+        # print(repr(VRresponse))
+        #   (TODO - clean up, use list of allowed responses for
+        #    different VICI_EUHA versions)
+        # OLDER version response: 
+        # if not(self.sendrecv('VR')[-10:]=='UA_MAIN_EQ'):
+        # NEW version of valve: NEW response string (mw231017)
+        if not(VRresponse[:16]=='MUA_MAIN_ST_2.45'):
             # device reply not recognized. close serial
             self.ser.close()
+            print('Got unexpected VICI_EUHA device response:')
+            print(repr(self.lastreply))
             raise Exception('After opening serial comms: unexpected (or empty) device response')
             
         # checking that operation be two-position with stops (= factory default) ...')
@@ -140,7 +149,7 @@ if __name__=='__main__':
     
     print('module self test.')
     
-    comport = "COM10"
+    comport = "COM13"
     immobile = False # if false will physically actuate the valve
     
     euha = VICI_EUHA(comport)
