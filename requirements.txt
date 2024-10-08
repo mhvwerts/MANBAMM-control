@@ -1,2 +1,17 @@
+python=3.12
+numpy
+scipy
+matplotlib
+xarray
+tqdm
+numba
+pillow
+h5py
+spyder
+jupyterlab
+ipywidgets
+openpyxl
+tifffile
+lmfit
 pyserial
 remi
