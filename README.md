@@ -39,7 +39,7 @@ These are the instructions to obtain our recommended, standardized Miniconda Pyt
 
 1. Go to https://docs.anaconda.com/miniconda/
 
-2. Download Miniconda3 Windows 64-bit installer.
+2. Download [Miniconda3 Windows 64-bit installer](https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe).
 
 3. Run the installer. **USE THE RECOMMENDED (DEFAULT) OPTIONS** (in particular, install "Just for me" (not for other users)).
 
