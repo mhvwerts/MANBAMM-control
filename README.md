@@ -58,7 +58,7 @@ conda update --all
 ```
 conda create --name std312 python=3.12 numpy scipy matplotlib xarray tqdm numba pillow h5py spyder jupyterlab ipywidgets openpyxl tifffile lmfit pyserial remi 
 ```
-Alternatively, the following should also work (if you have the file `requirements.txt` ready).
+Alternatively, the following should also work (if you have the file `requirements.txt` from this GitHub repository available).
 ```
 conda install --name std312 --file requirements.txt                        
 ```
