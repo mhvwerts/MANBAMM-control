@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+# Communications module (RS232) for Aladdin syringe pump
+
 from time import sleep
 import serial
 
