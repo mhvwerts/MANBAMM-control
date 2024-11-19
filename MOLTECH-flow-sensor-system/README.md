@@ -14,7 +14,7 @@ The Sensirion LG16-xxxxD modules are easily connected to an Arduino board for co
 
 ## Firmware
 
-`firmware_flowsensors_vX_X.ino` contains the current Arduino firmware. On one side, it takes care of the I2C communication with the Sensirion SF04 chip in the LG16-xxxxD series sensors. On the other, it interacts with the host terminal via a (USB) serial connection.
+`firmware_flowsensors_vX_X.ino` contains the current Arduino firmware. On one side, it takes care of the I2C communication with the Sensirion SF04 chip in the LG16-xxxxD series sensors. On the other side, it interacts with the host terminal via a (USB) serial connection.
 
 ![Schematic of connection between LG16 sensor and Arduino UNO board](./res/LG16-xxxxD-i2cconnectionarduino.png)
 
