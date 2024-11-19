@@ -8,6 +8,7 @@ This section of the repository contains the hardware description of the MOLTECH-
 
 The Sensirion LG16-xxxxD modules are easily connected to an Arduino board for communication via an I2C bus. Here's the configuration for a standard Arduino UNO board (information provided by Sensirion).
 
+![Schematic of connection between LG16 sensor and Arduino UNO board](./res/LG16-xxxxD-i2cconnectionarduino.png)
 
 
 
@@ -16,7 +17,6 @@ The Sensirion LG16-xxxxD modules are easily connected to an Arduino board for co
 
 `firmware_flowsensors_vX_X.ino` contains the current Arduino firmware. On one side, it takes care of the I2C communication with the Sensirion SF04 chip in the LG16-xxxxD series sensors. On the other side, it interacts with the host terminal via a (USB) serial connection.
 
-![Schematic of connection between LG16 sensor and Arduino UNO board](./res/LG16-xxxxD-i2cconnectionarduino.png)
 
 More information and Arduino code for low-level communication with the Sensirion liquid flow sensors can be found at https://github.com/Sensirion/arduino-liquid-flow-snippets
 
