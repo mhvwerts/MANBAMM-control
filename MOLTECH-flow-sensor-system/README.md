@@ -10,7 +10,9 @@ The Sensirion LG16-xxxxD modules are easily connected to an Arduino board for co
 
 ![Schematic of connection between LG16 sensor and Arduino UNO board](./res/LG16-xxxxD-i2cconnectionarduino.png)
 
+Apparently, it is not necessary to add separate external pull-up resistors to the circuit. The sensor can be connected directly to the Arduino I/O pins.
 
+Further information can be found in the [Sensirion LG16-xxxxD datasheet](https://github.com/mhvwerts/MANBAMM-control/blob/main/MOLTECH-flow-sensor-system/res/Sensirion_Liquid_Flow_Meters_LG16_xxxxD_Datasheet.pdf), of which we keep a copy in this repository.
 
 
 ## Firmware
@@ -33,7 +35,4 @@ The sensor module replies to opcodes that are sent from the terminal via USB ser
 | `I!`    | Get info on the sensor configuration, flow rate units, firmware version |
 | `M!`    | Liquid flow rate measurement with calibrated unit conversion  |
 | `R!`    | Liquid flow rate measurement returning raw sensor data (signed 16-bit integer |
-
-
-
 
