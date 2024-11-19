@@ -13,7 +13,7 @@ For now, testing remote configuration of pump via RS232
 
 from time import sleep
 
-from aladdin import Aladdin
+from devcomms.aladdin import Aladdin
 
 
 # port and pump identifiers

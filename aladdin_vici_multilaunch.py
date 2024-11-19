@@ -34,11 +34,11 @@ input('Press enter to proceed!')
 print()
 
 
-p1 = subprocess.Popen([sys.executable, 'AladdinPilotGUI-plus2.py', '9707'],
+p1 = subprocess.Popen([sys.executable, './python-src/AladdinPilotGUI-plus2.py', '9707'],
                         shell = True)
 
 
-p2 = subprocess.Popen([sys.executable, 'AladdinPilotGUI-plus2.py', '9007'],
+p2 = subprocess.Popen([sys.executable, './python-src/AladdinPilotGUI-plus2.py', '9007'],
                         shell = True)
 
 

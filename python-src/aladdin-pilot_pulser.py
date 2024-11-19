@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-__version__ = '230107'
+__version__ = '241124'
 
 from time import sleep, time, strftime
 
-from aladdin import Aladdin        
+from devcomms.aladdin import Aladdin        
 
 
 

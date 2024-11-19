@@ -16,10 +16,10 @@ import remi
 
 from remi_extras import LineWriterBox
 
-from aladdin import Aladdin
-from aladdin import serial
+from devcomms.aladdin import Aladdin
+from devcomms.aladdin import serial
 
-from vici_euha import VICI_EUHA
+from devcomms.vici_euha import VICI_EUHA
 
 ####
 # configuration settings, to be externalised to a configuration file/module
