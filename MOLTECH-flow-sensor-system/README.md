@@ -12,7 +12,9 @@ The Sensirion LG16-xxxxD modules are easily connected to an Arduino board for co
 
 Apparently, it is not necessary to add separate external pull-up resistors to the circuit. The sensor can be connected directly to the Arduino I/O pins.
 
-Further information can be found in the [Sensirion LG16-xxxxD datasheet](https://github.com/mhvwerts/MANBAMM-control/blob/main/MOLTECH-flow-sensor-system/res/Sensirion_Liquid_Flow_Meters_LG16_xxxxD_Datasheet.pdf), of which we keep a copy in this repository.
+It is important to package all the elements into a robust box. Fluidic connections are made with standard (IDEX-style) fittings. The LG16-0150D sensor connects readily to 1/32" (PEEK) capillary tubing. Other models may use 1/16" tubing.
+
+Further hardware information can be found in the [Sensirion LG16-xxxxD datasheet](https://github.com/mhvwerts/MANBAMM-control/blob/main/MOLTECH-flow-sensor-system/res/Sensirion_Liquid_Flow_Meters_LG16_xxxxD_Datasheet.pdf), of which we keep a copy in this repository.
 
 
 ## Firmware
