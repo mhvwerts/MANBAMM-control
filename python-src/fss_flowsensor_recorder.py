@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Nov 19 15:23:36 2024
+Flow rate recorder as part of the MOLTECH-FSS Flow Sensor System
 
-@author: MOLTECHadmin
+This program communicates with MOLTECH-FSS modules via a USB serial link.
+
+Hardware and firmware of the MOLTECH-FSS modules are described at
+    https://github.com/mhvwerts/MANBAMM-control/tree/main/MOLTECH-flow-sensor-system
+
+
+Martinus Werts, 2024
+MOLTECH-Anjou, CNRS, Université d'Angers
 """
 import serial
 
@@ -66,7 +73,7 @@ class MOLTECH_FSS_dummy:
 Scale factor: 4
 Units: nl/min
 Units code: 2115
-Firmware version: v2.2 (dummy)
+Firmware version: v2.2
 -------------------------
 
         """
