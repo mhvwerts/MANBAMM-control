@@ -4,7 +4,7 @@
 
 *MOLTECH-Anjou, CNRS, Université d'Angers*
 
-The MOLTECH-FSS Flow Sensor System enables recording of microfluidic flow rates through capillaries, using USB-connected hardware modules. At the heart of these modules there is a Sensirion liquid flow sensor (LG16-xxxxD family), which is managed by an Arduino-compatible microcontroller, which communicates with a host terminal (typically, a lab PC) through a USB serial connection.
+The MOLTECH-FSS Flow Sensor System enables recording of microfluidic flow rates through capillaries, using USB-connected hardware modules. At the heart of these modules there is a Sensirion liquid flow sensor (LG16-xxxxD family), which is managed by an Arduino-compatible microcontroller communicating with a host terminal (typically, a lab PC) through a USB serial connection.
 
 This section of the repository contains the hardware description of the MOLTECH-FSS and the Arduino firmware. The host terminal software (Python programs running on the lab PC) can be found in `MANBAMM-control/python-src` together with the control software for other lab devices (*e.g.*, syringe pumps, fluidic valves).
 
@@ -37,7 +37,7 @@ The sensor module replies to opcodes that are sent from the terminal via USB ser
 
 | Opcode  | Function                                 |
 |---------|------------------------------------------|
-| `?!`    | Get the ID/name of the connected sensor  |
+| `?!`    | Get the ID/name of the connected sensor module  |
 | `I!`    | Get info on the sensor configuration, flow rate units, firmware version |
 | `M!`    | Liquid flow rate measurement with calibrated unit conversion  |
 | `R!`    | Liquid flow rate measurement returning raw sensor data (signed 16-bit integer |
