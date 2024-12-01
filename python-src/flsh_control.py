@@ -62,15 +62,16 @@ flshbx.set_width_s(0.00005)
 print(flshbx.get_status())
 
 # In a first oscilloscope measurement (241201), I found
-# actual period = 1.001 ms
-# actual width = 51.60 µs
-# This suggests that calibration may be further refined.
-# It is not yet clear if some offset coefficient should be introduced,
-# or if we can simply adjust the 's_per_tick = 6.25e-6'.
-# I think it will be offset coefficients, different for period
-# and width...
-# This is just a problem of precise time calibration, the pulses are stable 
+#   actual period = 1.001 ms (error +1 µs)
+#   actual width = 51.60 µs (error +1.60 µs)
+# This is within the ultimate resolution of the timing loop,
+# which is 6.25 µs ('s_per_tick = 6.25e-6')
+# This is only a problem of precise time calibration, the pulses are stable 
 # and steady. No jitter on my oscilloscope!
+# If needed, we can draw up a table with corrections for short pulses and
+# periods. Alternatively, there may be some offset value to be applied to
+# the real time part to get more precise values.
+
 
 
 flshbx.go()
