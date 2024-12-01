@@ -18,9 +18,17 @@
 
 /* Changelog
 
+mw241201  Set baudrate to 19200; 115200 is deemed unreliable. One should actually
+          use baudrates that fit best with 16 MHz. 115200 is not one of them.
+          I think that this was already tested by us in the past. It is possible
+          to go up to 500000 (500 kbps) with very reliable comms, simply stick
+          to only those baudrates that fit with 16 MHz. 115200 is a multiple
+          of the historic 9600 baud value, which was not conceived with 16 MHz
+          in mind.
+
 */
 
-/* Some test results
+/* Some test results. Measuring the TTL pulses with an oscilloscope.
 
 v241130-13h29 (firmwave v1.0)
 
@@ -86,7 +94,7 @@ volatile uint32_t cnt;
 /* USART routines */
 
 void USART_Init(void) {
-  uint16_t ubrr_value = 8; // Baud rate 115200, 16 MHz clock
+  uint16_t ubrr_value = 51; // Baud rate 19200, 16 MHz clock
   UBRR0H = (uint8_t)(ubrr_value >> 8);
   UBRR0L = (uint8_t)(ubrr_value);
   UCSR0B = (1 << RXEN0) | (1 << TXEN0); // Enable RX and TX
@@ -207,7 +215,7 @@ int main(void) {
 
         case 'N':   // Set ON time
           setvalue = USART_ReceiveDecimal();
-          if (setvalue > 0) {
+          if (setvalue >= 0) {
             cnt_on = (uint32_t) setvalue;
             cnt = 0; // do not forget to reset counter when changing values!
           }
@@ -218,7 +226,7 @@ int main(void) {
 
         case 'F':   // Set OFF time
           setvalue = USART_ReceiveDecimal();
-          if (setvalue > 0) {
+          if (setvalue >= 0) {
             cnt_off = (uint32_t) setvalue;
             cnt = 0; // do not forget to reset counter when changing values!
           }
