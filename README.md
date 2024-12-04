@@ -75,4 +75,5 @@ spyder
 
 9. After a short wait, the Spyder IDE will be up and running, and a handy shortcut will have been created in the start menu (with automatic activation of the `std312`) environment.
  
-11. You can use Spyder to interact with the Python. Alternatively, you can open the  "Anaconda Powershell Prompt (miniconda3)" from the Start Menu, and use `conda activate std312` to be able to run scripts from the command line interface.  
+11. You can use Spyder to interact with the Python. Alternatively, you can open the  "Anaconda Powershell Prompt (miniconda3)" from the Start Menu. **Important!** Each time you open the Powershell, first use the `conda activate std312` command before anything else. This is required to switch to the `std312` environment where all the required packages and Python modules are installed.
+
