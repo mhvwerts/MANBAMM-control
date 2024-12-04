@@ -14,4 +14,5 @@ openpyxl
 tifffile
 lmfit
 pyserial
+pyqtgraph
 remi
