@@ -11,8 +11,17 @@
  *          Reads the raw measurement data from the sensor and transmits it to
  *          the serial interface
  *
- *          This code targets the Seeeduino XIAO board, but should also work
- *          easily with a standard Arduino UNO board.
+ *          This code was initially developed with the Seeeduino XIAO board, but
+ *          should also work easily with a standard Arduino UNO board.
+ *
+ *          This firmware works with the Raspberry Pi Pico 1 board using the
+ *          Arduino-Pico environment. No modifications to the code are needed.
+ *          Pin connections (no additional resistors needed):
+ *            SDA (brown wire) to Pico pin 6 (I2C0 SDA)
+ *            SCL (red wire) to Pico pin 7 (I2C0 SCL)
+ *            GND (yellow wire) to Pico pin 8 (GND)
+ *            V_DD (orange wire) to Pico pin 40 (VBUS)
+ *            (green wire is not connected, left floating as per datasheet)
  *
  *          M. Loumaigne and M. H. V. Werts, 2024
  *          MOLTECH-Anjou, CNRS, Université d'Angers
@@ -20,6 +29,8 @@
  ******************************************************************************/
 
 /* Changelog
+    mw241207  Success with Raspberry Pi Pico (RP2040) and Arduino-Pico
+
     mw241119  Further clean-up. Added 'R' raw measurement output.
               Change termination character to '!'. Serial timeout 1000ms.
 
@@ -32,7 +43,7 @@
 /*******************************************************************************
  * Specific compile-time configuration for each individual sensor device
  ******************************************************************************/
-const char *DEV_ID = "MOLTECH flow sensor 01"; // each device should have a unique number
+const char *DEV_ID = "MOLTECH flow sensor 02"; // each device should have a unique number
 const char *FIRMWARE_VERSION = "2.2";
 const int ADDRESS = 0x40; // Standard address for Liquid Flow Sensors
 
