@@ -23,7 +23,7 @@ Apparently, it is not necessary to add separate external pull-up resistors to th
 
 ### Raspberry Pi Pico
 
-Similarly, we succesfully used a readily available [Raspberry Pi Pico microcontroller board]( https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html#pico-1-family). The (Arduino-style) firmware works with the excellent [Arduino Pico environment](https://arduino-pico.readthedocs.io/en/stable/), which enables direct programming of the Pico board using the Arduino IDE.
+Similarly, we succesfully used a readily available [Raspberry Pi Pico microcontroller board]( https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html#pico-1-family). The (Arduino-style) firmware works with the excellent [Arduino-Pico environment](https://arduino-pico.readthedocs.io/en/stable/), which enables direct programming of the Pico board using the Arduino IDE.
 
 Pin connections between Sensirion module and RPi Pico board, using the flat ribbon cable from the connectivity kit. No additional resistors are needed:
 
