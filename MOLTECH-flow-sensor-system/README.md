@@ -62,5 +62,5 @@ The sensor module replies to opcodes that are sent from the terminal via USB ser
 | `?!`    | Get the ID/name of the connected sensor module  |
 | `I!`    | Get info on the sensor configuration, flow rate units, firmware version |
 | `M!`    | Liquid flow rate measurement with calibrated unit conversion  |
-| `R!`    | Liquid flow rate measurement returning raw sensor data (signed 16-bit integer |
+| `R!`    | Liquid flow rate measurement returning raw sensor data (signed 16-bit integer) |
 
