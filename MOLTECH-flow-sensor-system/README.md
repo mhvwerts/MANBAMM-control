@@ -41,6 +41,7 @@ Check out the [pin-out diagram of the Raspberry Pi Pico](https://github.com/mhvw
 
 It is important to package all the elements into a robust box. Fluidic connections are made with standard (IDEX-style) fittings. The LG16-0150D sensor connects readily to 1/32" (PEEK) capillary tubing. Other models may use 1/16" tubing.
 
+![Suggestion for a nice flow sensor box](./res/MOLTECH-FSS-02-241209-800.jpg)
 
 
 ## Firmware
