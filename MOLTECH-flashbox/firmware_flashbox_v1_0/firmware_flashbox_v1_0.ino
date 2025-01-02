@@ -36,7 +36,8 @@ Period
 Value	                Period time (s)
 350000	              2.187
 320000	              2.000
-100                   
+
+100                 625.8 us (measured)
 
 
 Pulse width
@@ -45,6 +46,8 @@ Delta value (ON-OFF)	Pulse width (ms)
 76000	                475.0
 78000	                487.5
 80000	                500.0
+
+1						  7.691 us
 
 
 
