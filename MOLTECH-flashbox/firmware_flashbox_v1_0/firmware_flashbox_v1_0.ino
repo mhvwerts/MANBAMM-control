@@ -8,8 +8,8 @@
  * set-up
  *
  * This code targets the Arduino Duemilanove board with ATMega168 controller
- * (recycle and reuse of old electronics!) but should work without modification 
- * on any modern Arduino UNO with ATMega328p
+ * (recycle and reuse of old electronics!) but works without modification 
+ * on any modern Arduino UNO with ATMega328p controller
  *
  * M. H. V. Werts, 2024
  * MOLTECH-Anjou, CNRS, Université d'Angers
@@ -36,6 +36,8 @@ Period
 Value	                Period time (s)
 350000	              2.187
 320000	              2.000
+100                   
+
 
 Pulse width
 Delta value (ON-OFF)	Pulse width (ms)
@@ -45,18 +47,10 @@ Delta value (ON-OFF)	Pulse width (ms)
 80000	                500.0
 
 
-v241130-11h03 (older version of firmware)
-  TIMINGS
-  cnt_period = 10000    period = 38.75 ms rock steady
-  cnt_on = 1000
-  cnt_off = 2000        pulse width = 3.876 ms rock solid    
 
-  cnt_period = 1000    period = 3.885 ms rock steady
-  cnt_on = 100
-  cnt_off = 200        pulse width = 0.3884 ms rock solid    
 
-                       rise time 7 ns (no load) SCOPE LIMITED
-                       fall time 7 ns (no load) SCOPE LIMITED
+rise time 7 ns (no load) SCOPE LIMITED
+fall time 7 ns (no load) SCOPE LIMITED
 
 */
 
@@ -82,10 +76,15 @@ const char statechr[MAXSTATE+1] = "!.E";
 volatile unsigned char state;
 
 // for counter register
-// initial values give a 2s period with a 0.5s flash
-uint32_t cnt_on = 1000UL;
-uint32_t cnt_off = 81000UL; // delta = 80000
-uint32_t cnt_period = 320000UL;
+// these initial values give the shortest pulse (7.691us) with a 625.8 us period
+uint32_t cnt_on = 0UL;
+uint32_t cnt_off = 1UL; // delta = 1
+uint32_t cnt_period = 100UL;
+
+// // these initial values give a 2s period with a 0.5s flash
+// uint32_t cnt_on = 1000UL;
+// uint32_t cnt_off = 81000UL; // delta = 80000
+// uint32_t cnt_period = 320000UL;
 
 volatile uint32_t cnt;
 
@@ -190,15 +189,15 @@ int main(void) {
     if (UCSR0A & (1 << RXC0)) {
       in_char = UDR0; // Read the received character
       switch (in_char) {
-        case '!':  
+        case '!':   // Set state to flashing (pulse outpu)
           state = FLASHING;
           break;
 
-        case '.':
+        case '.':   // Set state to waiting (no pulse output)
           state = WAITING;
           break;
 
-        case '?':  // Echo a message
+        case '?':  // Output current state
           USART_Transmit(statechr[state]);
           break;
 
