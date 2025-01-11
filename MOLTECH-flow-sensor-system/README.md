@@ -1,12 +1,12 @@
 # MOLTECH-FSS Flow Sensor System
 
-*by Matthieu Loumaigne and Martinus Werts*
+*by Charbel Yared, Matthieu Loumaigne and Martinus Werts*
 
 *MOLTECH-Anjou, CNRS, Université d'Angers*
 
 The MOLTECH-FSS Flow Sensor System enables recording of microfluidic flow rates through capillaries, using USB-connected hardware modules. At the heart of these modules there is a Sensirion liquid flow sensor (LG16-xxxxD family), which is managed by an Arduino-compatible microcontroller communicating with a host terminal (typically, a lab PC) through a USB serial connection.
 
-This section of the repository contains the hardware description of the MOLTECH-FSS and the Arduino firmware. The host terminal software (Python programs running on the lab PC) can be found in `MANBAMM-control/python-src` together with the control software for other lab devices (*e.g.*, syringe pumps, fluidic valves).
+This section of the repository contains the hardware description of the MOLTECH-FSS and the Arduino firmware. Included is a minimal host terminal script (Python program running on the lab PC) for communicating with the flow sensor and recording flow rates. In `MANBAMM-control/python-src` there is a version integrated with the control software for other lab devices (syringe pumps, fluidic valves and the like).
 
 ## Hardware
 
@@ -54,7 +54,9 @@ More information and Arduino code for low-level communication with the Sensirion
 
 ## USB serial communication protocol
 
-The protocol is very simple, and uses ASCII text. Numbers are given in ASCII decimal form. Each text block is terminated with a `!`, both on the terminal side and on the sensor module side.
+When connected to a host computer via USB, the MOLTECH-FSS appears as a simple serial (COM) port. It uses standard RS232-style 9600 baud, 8N1 serial communication.
+
+The sensor control protocol is very simple, and uses pure ASCII text. Numbers are given in ASCII decimal form. Each text block is terminated with a `!`, both on the terminal side and on the sensor module side.
 
 The sensor module replies to opcodes that are sent from the terminal via USB serial.
 
@@ -64,4 +66,7 @@ The sensor module replies to opcodes that are sent from the terminal via USB ser
 | `I!`    | Get info on the sensor configuration, flow rate units, firmware version |
 | `M!`    | Liquid flow rate measurement with calibrated unit conversion  |
 | `R!`    | Liquid flow rate measurement returning raw sensor data (signed 16-bit integer) |
+
+Communication with the module is illustrated in the Python program `fss_flowsensor_recorder.py` which uses a library, `moltech_fss.py`.
+
 
