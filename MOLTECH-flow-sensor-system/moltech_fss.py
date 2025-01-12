@@ -38,8 +38,10 @@ class MOLTECH_FSS:
         self.lastdata = self.sport.read_until(b'!')
         decodata = self.lastdata.decode('ascii')
         if not decodata.endswith('!'):
-            decodata = None # invalid reply
-        return decodata[:-1]
+            # invalid reply received
+            return None 
+        else:
+            return decodata[:-1]
         
     def close(self):
         self.sport.close()
