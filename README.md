@@ -31,9 +31,9 @@ VICI (Valco Instruments Co. Inc.) micro-controlled EUHA valve, with RS232 serial
 
 ## (Recommended) Python configuration
 
-*Last tested on 2025-01-15, Windows 11 64-bit; Miniconda3 Python 3.12 *
+*Last tested on 2025-01-15, Windows 11 64-bit; Miniconda3 Python 3.12*
 
-*Next time, consider the new https://conda-forge.org/download/ *
+*Next time, consider the new https://conda-forge.org/download/*
 
 These are the instructions to obtain our recommended, standardized Miniconda Python 3.12 environment with the required components ('packages') installed. The instructions are intended for use with Windows 10 / Windows 11, but could easily be adapted for other operating systems.
 
