@@ -31,23 +31,27 @@ VICI (Valco Instruments Co. Inc.) micro-controlled EUHA valve, with RS232 serial
 
 ## (Recommended) Python configuration
 
-*last tested 2024-10-08, Windows 10 64-bit*
+*Last tested on 2025-01-15, Windows 11 64-bit; Miniconda3 Python 3.12 *
+
+*Next time, consider the new https://conda-forge.org/download/ *
 
 These are the instructions to obtain our recommended, standardized Miniconda Python 3.12 environment with the required components ('packages') installed. The instructions are intended for use with Windows 10 / Windows 11, but could easily be adapted for other operating systems.
 
 0. Prior to installing Miniconda3, carefully remove all previously installed Python distributions.
 
-1. Go to https://docs.anaconda.com/miniconda/
+1. Go to https://www.anaconda.com/download/success , then locate the Miniconda installer.
 
 2. Download [Miniconda3 Windows 64-bit installer](https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe).
 
 3. Run the installer. **USE THE RECOMMENDED (DEFAULT) OPTIONS** (in particular, install "Just for me" (not for other users)).
 
-4. After installation, open  "Anaconda Powershell Prompt (miniconda3)" from the Start Menu to have access to the command line interface to enter the configuration commands to be executed
+4. After installation, open  "Anaconda Powershell Prompt" from the Start Menu to have access to the command line interface to enter the configuration commands to be executed
 
 5. Execute *precisely* the following commands to configure Miniconda to work with the Conda-forge repository.
 ```
-conda config --remove channels defaults
+conda config --remove channels https://repo.anaconda.com/pkgs
+conda config --remove channels https://repo.anaconda.com/pkgs/main
+conda config --remove channels https://repo.anaconda.com/pkgs/r
 conda config --add channels conda-forge
 conda config --set channel_priority strict
 conda update conda
