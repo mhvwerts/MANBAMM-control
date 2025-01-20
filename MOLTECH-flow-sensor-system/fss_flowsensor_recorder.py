@@ -52,6 +52,7 @@ print(outfname)
 
 
 fout = open(outfname, 'w')
+fout.write('t0_abs_time_iso\t')
 fout.write(tfstr_full)
 fout.write('\n')
 fout.write('time(s)\tflow(nlmin)\n')
