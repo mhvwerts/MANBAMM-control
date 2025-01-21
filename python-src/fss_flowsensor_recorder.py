@@ -11,8 +11,14 @@ Martinus Werts, 2024
 MOLTECH-Anjou, CNRS, Université d'Angers
 """
 
-portstr = "COM8"
+#%% CONFIGURATION
+portstr = "COM11"
 # portstr = None # development
+
+Tsleep = 1.0
+MAXITER = 20000
+
+#%%
 
 from time import sleep
 from time import time
@@ -38,24 +44,26 @@ print(fss.info)
 
 tfile = time()
 dtfile = datetime.fromtimestamp(tfile)
-tfstr = dtfile.isoformat().split('.')[0]
+tfstr_full = dtfile.isoformat()
+tfstr = tfstr_full.split('.')[0]
 outfname = fss.name + ' ' + tfstr.replace(':','-') + '.csv'
 
 print(outfname)
 
 
 fout = open(outfname, 'w')
-fout.write(tfstr)
+fout.write('t0_abs_time_iso\t')
+fout.write(tfstr_full)
 fout.write('\n')
 fout.write('time(s)\tflow(nlmin)\n')
-for x in range(9000):
+for x in range(MAXITER):
     t_meas0 = time()
     flow_meas = fss.get_measurement()
     t_meas1 = time()
     t_meas = 0.5*(t_meas0+t_meas1) - tfile
     print(f"{t_meas:8.3f}\t{flow_meas}")
     fout.write(f"{t_meas:.3f}\t{flow_meas}\n")
-    sleep(1.0)
+    sleep(Tsleep)
     fout.flush()
 
 fout.close()    

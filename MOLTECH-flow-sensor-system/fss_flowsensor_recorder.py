@@ -1,4 +1,10 @@
 """
+THIS IS A SMALL, MINIMAL COMMUNICATIONS PROGRAM
+FOR ILLUSTRATION PURPOSES.
+
+The latest and greatest version is in
+../python-src/devcomms
+
 Flow rate recorder as part of the MOLTECH-FSS Flow Sensor System
 
 This program communicates with MOLTECH-FSS modules via a USB serial link.

@@ -1,4 +1,9 @@
 """
+THIS IS A SMALL, MINIMAL COMMUNICATIONS PROGRAM
+FOR ILLUSTRATION PURPOSES.
+The latest and greatest version is in
+../python-src/devcomms
+
 Communications with MOLTECH-FSS Flow Sensor modules
 
 Serial USB communications.
