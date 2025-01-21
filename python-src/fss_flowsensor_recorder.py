@@ -15,11 +15,14 @@ MOLTECH-Anjou, CNRS, Université d'Angers
 portstr = "COM11"
 # portstr = None # development
 
+outpname = '../local/'
+
 Tsleep = 1.0
 MAXITER = 20000
 
 #%%
 
+from pathlib import Path
 from time import sleep
 from time import time
 from datetime import datetime
@@ -50,8 +53,9 @@ outfname = fss.name + ' ' + tfstr.replace(':','-') + '.csv'
 
 print(outfname)
 
+outpath = Path(outpname, outfname)
 
-fout = open(outfname, 'w')
+fout = open(outpath, 'w')
 fout.write('t0_abs_time_iso\t')
 fout.write(tfstr_full)
 fout.write('\n')

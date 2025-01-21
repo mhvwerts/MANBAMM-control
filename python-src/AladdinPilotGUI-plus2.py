@@ -35,7 +35,7 @@ IP_PORT = 9013 # make sure that every instance has its own port!!
 # and the values will be the parameter strings to be sent to the functions
 # that configure the pump
 
-commports = ['COM10', 'COM11', 'COM12', 'COM13']
+commports = ['COM3', 'COM4', 'COM5', 'COM6']
 
 pumpIDs = ['01', '02']
 
@@ -48,7 +48,7 @@ syringetype_items = {'SGE100µl (1.456mm)': 'DIA1.456',
                      '20 ml (20.10mm)': 'DIA20.10'}
 syringetypes = list(syringetype_items.keys())
 
-pumprates = ['0.5', '1.0', '2.0', '5.0', '10.0', '20.0', '50.0']
+pumprates = ['0.5', '1.0', '2.0', '4.0', '10.0', '20.0', '50.0']
 
 # healthy pauses during Aladdin communication/operations
 ALADDIN_LONGSLEEP = 1.0
