@@ -6,10 +6,9 @@
 
 The MOLTECH-FSS Flow Sensor System enables recording of microfluidic flow rates through capillaries, using USB-connected hardware modules. At the heart of these modules there is a Sensirion liquid flow sensor (LG16-xxxxD family), which is managed by an Arduino-compatible microcontroller communicating with a host terminal (typically, a lab PC) through a USB serial connection.
 
-This section of the repository contains the hardware description of the MOLTECH-FSS and the Arduino firmware. Included is a minimal host terminal script (Python program running on the lab PC) for communicating with the flow sensor and recording flow rates. In `MANBAMM-control/python-src` there is a version integrated with the control software for other lab devices (syringe pumps, fluidic valves and the like).
+This section of the repository *only* contains the hardware description of the MOLTECH-FSS and the Arduino firmware. The Python module for communicating with the MOLTECH-FSS devices is located in [`MANBAMM-control/python-src`](https://github.com/mhvwerts/MANBAMM-control/tree/main/python-src) together with scripts for flow-rate recording and control software for other lab devices (syringe pumps, fluidic valves, etc.).
 
 ## Hardware
-
 
 Hardware information for the Sensirion modules can be found in the [Sensirion LG16-xxxxD datasheet](https://github.com/mhvwerts/MANBAMM-control/blob/main/MOLTECH-flow-sensor-system/res/Sensirion_Liquid_Flow_Meters_LG16_xxxxD_Datasheet.pdf), of which we keep a copy in this repository.
 
@@ -67,6 +66,6 @@ The sensor module replies to opcodes that are sent from the terminal via USB ser
 | `M!`    | Liquid flow rate measurement with calibrated unit conversion  |
 | `R!`    | Liquid flow rate measurement returning raw sensor data (signed 16-bit integer) |
 
-Communication with the module is illustrated in the Python program `fss_flowsensor_recorder.py` which uses a library, `moltech_fss.py`.
+Communication with the module is illustrated in the Python program `fss_flowsensor_recorder.py` which uses a specific python module, `devcomms/moltech_fss.py`. This code can be found in [`MANBAMM-control/python-src`](https://github.com/mhvwerts/MANBAMM-control/tree/main/python-src).
 
 
