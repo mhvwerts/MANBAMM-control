@@ -42,10 +42,11 @@ pumpIDs = ['01', '02']
 syringetype_items = {'SGE100µl (1.456mm)': 'DIA1.456',
                      'SGE250µl (2.303mm)': 'DIA2.303',
                      'SGE500µl (3.257mm)': 'DIA3.257',
-                     '2 ml (9.537mm)': 'DIA9.537',
-                     '5 ml (12.62mm)': 'DIA12.62',
-                     '10 ml (15.96mm)': 'DIA15.96',
-                     '20 ml (20.10mm)': 'DIA20.10'}
+                     '2 ml plastic (9.537mm)': 'DIA9.537',
+                     '5 ml plastic (12.62mm)': 'DIA12.62',
+                     '10 ml plastic (15.96mm)': 'DIA15.96',         
+                     '10 ml SETonic glass (14.60mm)': 'DIA14.60',
+                     '20 ml plastic (20.10mm)': 'DIA20.10'}
 syringetypes = list(syringetype_items.keys())
 
 pumprates = ['0.5', '1.0', '2.0', '4.0', '10.0', '20.0', '50.0']
