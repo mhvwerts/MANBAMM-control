@@ -6,7 +6,7 @@
 
 The MOLTECH-FLSH Flashbox is a small USB-powered electronics box for generating precisely timed trigger and strobe TTL pulses in long-afterglow ('long-lifetime') photoluminescence ('phosphorescence') experiments (from 5 µs up to many seconds). The pulse timings are set via the USB serial connection of the Arduino. The pulse trains are essentially jitter-free down to a microsecond or so, thanks to tight coding.
 
-This section of the repository contains the hardware description of the MOLTECH-FLSH and the Arduino firmware. The host terminal software (Python programs running on the lab PC) can be found in `MANBAMM-control/python-src` together with the control software for other lab devices (*e.g.*, syringe pumps, fluidic valves, flowmeters).
+This section of the repository contains the hardware description of the MOLTECH-FLSH and the Arduino firmware. The host terminal software (Python programs running on the lab PC) can be found in  [`MANBAMM-control/python-src`](https://github.com/mhvwerts/MANBAMM-control/tree/main/python-src), together with the control software for other lab devices (*e.g.*, syringe pumps, fluidic valves, flowmeters).
 
 ## Hardware
 
@@ -24,4 +24,5 @@ The firmware code does not use the Arduino routines, but is vanilla AVR with dir
 
 ## USB serial communication protocol
 
-The protocol is minimalist, and uses ASCII text. Pending more documentation, the protocol can be easily deduced from the firmware source code.
+The protocol is minimalist, and uses ASCII text. Pending more documentation, the protocol can be easily deduced from the firmware source code, and the Python scripts. The latter can be found in  [`MANBAMM-control/python-src`](https://github.com/mhvwerts/MANBAMM-control/tree/main/python-src).
+
