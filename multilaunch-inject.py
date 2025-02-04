@@ -34,11 +34,11 @@ input('Press enter to proceed!')
 print()
 
 
-p1 = subprocess.Popen([sys.executable, 'python-src/FlowInjectPilot.py', '9707'],
+p1 = subprocess.Popen([sys.executable, 'python-src/FlowInjectPilot.py', '9710'],
                         shell = True)
 
 
-p2 = subprocess.Popen([sys.executable, 'python-src/FlowInjectPilot.py', '9417'],
+p2 = subprocess.Popen([sys.executable, 'python-src/FlowInjectPilot.py', '9418'],
                         shell = True)
 
 

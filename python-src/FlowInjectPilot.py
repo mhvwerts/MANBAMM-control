@@ -70,6 +70,12 @@ EUHA_FILL_POSITION = 'A'
 PROG_INJEKT_MIN = 1.0
 PROG_PRE_ROLL_S = 10. # number of seconds to first pre-fill
 PROG_UI_TO_SECONDS = 60 # UI value is in minutes
+PROG_MAXCYCLES = 5 # number of program cycles # 0 = indefinitely
+
+
+# set background color
+BKGND_COLOR = "rgb(255, 245, 195)"
+
 
 ####
 # Utility functions
@@ -99,9 +105,10 @@ class AladdinPumpSteady(remi.App):
         self.program_running = False
         
         # set number of program cycles TODO: set this in UI!!!
-        self.program_maxcycles = 5 # 0 = indefinitely
+        self.program_maxcycles = PROG_MAXCYCLES # 0 = indefinitely
         
         super(AladdinPumpSteady, self).__init__(*args)
+
 
 
     def main(self):
@@ -120,12 +127,16 @@ class AladdinPumpSteady(remi.App):
         
         cntr_main = gui.Container(width = containerw, height = 560)
         
+
+        
         #DOUBLE
         doublebox = gui.HBox()
                
                 
         if VICI_EUHA_MODE:
             vbox_main2 = gui.VBox()
+            # set background color
+            vbox_main2.css_background_color = BKGND_COLOR
             
             vbox_main2.append(gui.Label('VICI EUHA valve',margin='10px'))
             
@@ -238,6 +249,8 @@ class AladdinPumpSteady(remi.App):
         
         
         vbox_main = gui.VBox()
+        # set background color
+        vbox_main.css_background_color = BKGND_COLOR
         
         vbox_main.append(gui.Label('Aladdin syringe pump',margin='10px'))
         
@@ -335,7 +348,6 @@ class AladdinPumpSteady(remi.App):
 
         #DOUBLE
         doublebox.append(vbox_main)
-
 
 
         #DOUBLE
@@ -636,9 +648,7 @@ class AladdinPumpSteady(remi.App):
         
         # max number of cycles
         self.program_cycles = 0
-        ## self.program_maxcycles = 0 # TODO get from UI (for now defined in __init__)
-        self.linewriter.writeln('number of cycles: {0:d} !!! '\
-                                'TO DO make UI Spinbox to set value !!!'\
+        self.linewriter.writeln('Max. number of cycles: {0:d} !!! '
                                     .format(self.program_maxcycles))
         
         # initialize program
@@ -1008,13 +1018,24 @@ if __name__ == "__main__":
     
     assert IP_PORT >= 8000, 'IP_PORT should be 8000 or beyond'
     
-    
     # further decode IP_PORT 
     # and set configuration accordingly
     if IP_PORT < 9500:
         VICI_EUHA_MODE = True
     else:
-        VICI_EUHA_MODE = False
+        VICI_EUHA_MODE = False  
+        
+    # set background color according to IP_PORT number
+    # 5 or 10 colors to make life simpler
+    colorlist = ["rgb(255, 245, 195)",
+                 "rgb(230, 243, 255)",
+                 "rgb(255, 230, 247)",
+                 "rgb(204, 255, 245)",
+                 "rgb(215, 215, 215)",
+        ]
+    BKGND_COLOR = colorlist[IP_PORT%len(colorlist)]
+    
+    
     
     # starts the webserver
     # optional parameters
