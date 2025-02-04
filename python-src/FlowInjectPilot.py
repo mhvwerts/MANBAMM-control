@@ -176,7 +176,6 @@ class AladdinPumpSteady(remi.App):
             
             
             
-            
             m2_vbox3 = gui.VBox(height = 240, width= 320, margin='10px')
             m2_vbox3.css_border_style='solid'
             
@@ -1002,8 +1001,7 @@ class AladdinPumpSteady(remi.App):
 if __name__ == "__main__":
     print('Hello.')
     
-    
-    
+    # TODO: improve parsing of command-line parameters
     if len(sys.argv) == 2:
         # change IP_PORT from default value
         IP_PORT = int(sys.argv[1])
@@ -1013,18 +1011,10 @@ if __name__ == "__main__":
     
     # further decode IP_PORT 
     # and set configuration accordingly
-    
-    # TODO: each specific port number could correspond to a custom configuration
-    # limiting choices for pumpID etc. such that no mix-ups occur
-    
     if IP_PORT < 9500:
         VICI_EUHA_MODE = True
     else:
         VICI_EUHA_MODE = False
-    
-
-    
-    
     
     # starts the webserver
     # optional parameters
@@ -1032,8 +1022,9 @@ if __name__ == "__main__":
     print('running on {0:s}:{1:d}'.format(IP_ADDRESS, IP_PORT))
     # print('you should open your browser yourself')
     remi.start(AladdinPumpSteady,
-               title='AladdinPilot {0:d}'.format(IP_PORT), 
+               title='FlowInjectPilot {0:d}'.format(IP_PORT), 
                debug=False, # debug set to false
                address=IP_ADDRESS, port=IP_PORT,
                start_browser=True, 
                multiple_instance=False) # multiple_instance set to false
+
