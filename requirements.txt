@@ -5,6 +5,8 @@ matplotlib
 xarray
 tqdm
 numba
+remi
+marimo
 pillow
 h5py
 spyder
@@ -15,4 +17,3 @@ tifffile
 lmfit
 pyserial
 pyqtgraph
-remi

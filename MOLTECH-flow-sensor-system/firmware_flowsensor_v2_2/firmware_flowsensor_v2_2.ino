@@ -43,7 +43,7 @@
 /*******************************************************************************
  * Specific compile-time configuration for each individual sensor device
  ******************************************************************************/
-const char *DEV_ID = "MOLTECH flow sensor 03"; // each device should have a unique number
+const char *DEV_ID = "MOLTECH flow sensor 04"; // each device should have a unique number
 const char *FIRMWARE_VERSION = "2.2";
 const int ADDRESS = 0x40; // Standard address for Liquid Flow Sensors
 
