@@ -9,6 +9,7 @@ remi
 marimo
 pillow
 h5py
+netcdf4
 spyder
 jupyterlab
 ipywidgets

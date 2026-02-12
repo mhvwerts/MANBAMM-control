@@ -25,7 +25,7 @@ The well-known red "Aladdin" syringe pump by World Precision Instruments (https:
 Development has started on a small GUI application for Aladdin pump configuration & control. This app is functional, but not yet polished.
 
 
-### MOLTECH-FSS flow sensor systems
+### MOLTECH-FSS flow sensor system
 
 The flow sensor hardware modules developed at MOLTECH-Anjou are described [here](https://github.com/mhvwerts/MANBAMM-control/tree/main/MOLTECH-flow-sensor-system)
 .
