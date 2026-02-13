@@ -9,10 +9,15 @@ This is an Arduino Uno R3-based controller for the VICI valve actuator, enabling
 
 ### Connector
 
-![VICI actuator standard interface connector](.\VICI_fig4.png)
+The controller should be connected to the 6-pin "standard interface" connector on the back of the VICI valve enclosure.
 
-VICI actuator standard interface connector pin-out
+![VICI actuator standard interface connector](./VICI_fig4.png)
 
+**Figure.** VICI actuator standard interface connector pin-out
+
+The functions of the pins change slightly depending on the operating mode of the valve actuator. 
+
+**WARNING!** The current controller is designed for operation with the "Two Position Mode" only!
 
 #### Two Position Mode Pin Assignments
 
