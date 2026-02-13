@@ -7,6 +7,12 @@ This is an Arduino Uno R3-based controller for the VICI valve actuator, enabling
 
 ## Hardware
 
+### Arduino Uno R3 extension board
+
+![Schematic of Arduino Uno R3 control electronics](./vici-ttl-control-board.png)
+
+
+
 ### Connector
 
 The controller should be connected to the 6-pin "standard interface" connector on the back of the VICI valve enclosure.
