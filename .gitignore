@@ -8,4 +8,5 @@ local/
 *.tar.gz
 *.tgz
 *.bak
+*.lnk
 .DS_Store
