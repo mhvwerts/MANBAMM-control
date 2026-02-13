@@ -10,7 +10,7 @@ This section of the repository *only* contains the hardware design and the Ardui
 
 ## Arduino firmware
 
-The firmware is very basic, just communicating over a 9600 baud serial-to-USB connection, with very simple instructions and replies. The intelligent handling of the valve switching and monitoring is done in the corresponding Python communications module. 
+The [firmware](https://github.com/mhvwerts/MANBAMM-control/tree/main/MOLTECH-VICI-TTL-control/VICI_TTL_firmware) is very basic, just communicating over a 9600 baud serial-to-USB connection, with simple instructions and replies. The intelligent handling of the valve switching and monitoring is done in the corresponding Python communications module. 
 
 
 ## Hardware
