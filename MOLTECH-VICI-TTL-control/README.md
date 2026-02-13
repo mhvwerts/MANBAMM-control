@@ -9,7 +9,7 @@ This is an Arduino Uno R3-based controller for the VICI valve actuator, enabling
 
 ### Connector
 
-![VICI actuator standard interface connector](.\VICI_fig4.png)
+![VICI actuator standard interface connector](./VICI_fig4.png)
 
 VICI actuator standard interface connector pin-out
 
