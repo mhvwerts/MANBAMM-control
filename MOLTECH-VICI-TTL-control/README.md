@@ -9,6 +9,8 @@ This is an Arduino Uno R3-based controller for the VICI valve actuator, enabling
 
 ### Arduino Uno R3 extension board
 
+The inputs on the VICI valve interface have an internal pull-up resistor, and valve switching occurs upon pulling down, for at least 20 ms, the input corresponding to the desired valve position. A specific inteface circuit based on the 2N7000 is used here to reliably pull down the VICI input, without any spurious valve switching upon powering on or off the Arduino board. The circuit was tested to work reliably and will not unexpectedly switch the valve when powering up or down. 
+
 ![Schematic of Arduino Uno R3 control electronics](./vici-ttl-control-board.png)
 
 
