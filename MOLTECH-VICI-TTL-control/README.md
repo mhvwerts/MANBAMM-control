@@ -2,7 +2,15 @@
 
 This is an Arduino Uno R3-based controller for the VICI valve actuator, enabling direct switching of the valve via the TTL standard interface.
 
-**under development**
+*under development*
+
+This section of the repository *only* contains the hardware design and the Arduino firmware of MOLTECH-VICI-TTL-control. The Python module for communicating with the device is located in [`MANBAMM-control/python-src`](https://github.com/mhvwerts/MANBAMM-control/tree/main/python-src).
+
+
+
+## Arduino firmware
+
+The firmware is very basic, just communicating over a 9600 baud serial-to-USB connection, with very simple instructions and replies. The intelligent handling of the valve switching and monitoring is done in the corresponding Python communications module. 
 
 
 ## Hardware

@@ -2,18 +2,19 @@
 #define PIN_B 6
 #define MON_A 7
 #define MON_B 8
-#define LOWDLY 100
-#define VALVEDLY 900
+#define PULSEDLY 100
+#define VALVEDLY 300
 #define LOOPDLY 100
 
 
 void setup() {
-  // put your setup code here, to run once:
+  // Configure and initialize pins
   pinMode(PIN_A, OUTPUT);
   digitalWrite(PIN_A, LOW);
-
   pinMode(PIN_B, OUTPUT);
   digitalWrite(PIN_B, LOW);
+  pinMode(MON_A, INPUT);
+  pinMode(MON_B, INPUT);
 
   Serial.begin(9600); // initialize serial comms, default = 8N1
   Serial.setTimeout(1000);
@@ -21,32 +22,60 @@ void setup() {
 }
 
 
+void output_status() {
+  int stateAB = (digitalRead(MON_B) << 1) | digitalRead(MON_A);
+  switch (stateAB) {
+    case 0:
+      Serial.write('0');
+      break;
+    case 1:
+      Serial.write('A');
+      break;
+    case 2:
+      Serial.write('B');
+      break;
+    case 3:
+      Serial.write('X');
+      break;
+    default:
+      // should never happen!
+      Serial.write('?');
+      break;
+  }
+}
+
+
 void loop() {
-  // put your main code here, to run repeatedly:
   if (Serial.available() > 0) {
     char c = Serial.read(); 
-    // only take first character, rest will be flushed to avoid delayed axecution of piled up instructions
+    // only take first character, rest will be flushed to avoid delayed execution of piled up instructions
     switch (c) {
       case 'a':
-        // do something
         digitalWrite(PIN_A, HIGH);
-        delay(LOWDLY);
+        delay(PULSEDLY);
         digitalWrite(PIN_A, LOW);
-        Serial.write('A');
         delay(VALVEDLY);
+        output_status();
         break;
       case 'b':
-        // do something else
         digitalWrite(PIN_B, HIGH);
-        delay(LOWDLY);
+        delay(PULSEDLY);
         digitalWrite(PIN_B, LOW);
-        Serial.write('B');
         delay(VALVEDLY);
+        output_status();
+        break;
+      case '?':
+        output_status();
+        break;
+      case '!':
+        // The output string should end with an exclamation mark, and should
+        // not contain any other exclamation marks.
+        Serial.print("Hello, this is MOLTECH-VICI-TTL control v260213a!");
         break;
       default:
         break;
     }
-    delay(LOOPDLY); // just wait (0.1) seconds
+    delay(LOOPDLY); // just wait LOOPDLY milliseconds
     // flush RX buffer
     while (Serial.available()) Serial.read();
   }
