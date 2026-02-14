@@ -40,7 +40,7 @@ class VICI_TTL:
         # specified in the 'VICI_TTL_firmware.ino' Arduino firmware.
         # Hardcoded for now, need to be manually changed. A shared
         # config-file would be overkill.
-        self.LPAUSE = 1.0 # "long" pause (in seconds)
+        self.LPAUSE = 0.5 # "long" pause (in seconds)
         self.PAUSE = 0.12  # pause (in seconds)
         self.ser_timeout = 2.0 # give enough time for Arduino to reply!!
 
@@ -54,8 +54,9 @@ class VICI_TTL:
                     parity=serial.PARITY_NONE,
                     stopbits=serial.STOPBITS_ONE,
                     timeout=self.ser_timeout)
-        sleep(1.0) # Needed for some Arduino boards... tweak if initialization
-                   # problems
+        sleep(1.0) # Needed for some Arduino boards to wake up...
+                   # Tweak this if initialization problem.
+                
                 
         # Serial comms: wait , flush, wait, and check if things are quiet
         sleep(self.LPAUSE) # just a pause

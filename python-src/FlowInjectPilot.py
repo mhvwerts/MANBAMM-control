@@ -3,7 +3,7 @@
 GUI for control of an Aladdin pump with the option to simultaneously
 control a VICI EUHA motorized valve.
 
-The GUI is implemented in with Remi, and may be remote via TCP/IP
+The GUI is implemented with Remi, and may be remote via TCP/IP
 """
 
 import sys
@@ -19,10 +19,19 @@ from remi_extras import LineWriterBox
 from devcomms.aladdin import Aladdin
 from devcomms.aladdin import serial
 
-from devcomms.vici_euha import VICI_EUHA
+
+## choose between VICI_EUHA or VICI_TTL (migration from VICI_EUHA to VICI_TTL)
+
+# from devcomms.vici_euha import VICI_EUHA as VICI_control
+from devcomms.vici_ttl import VICI_TTL as VICI_control
+
+
+
+#%%
 
 ####
-# configuration settings, to be externalised to a configuration file/module
+# BEGIN of configuration settings
+#   to be externalised to a configuration file/module
 
 # server IP address, port
 IP_ADDRESS = '0.0.0.0' #localhost
@@ -75,6 +84,13 @@ PROG_MAXCYCLES = 5 # number of program cycles # 0 = indefinitely
 
 # set background color
 BKGND_COLOR = "rgb(255, 245, 195)"
+
+### END of configuration settings
+
+
+
+#%%
+
 
 
 ####
@@ -967,7 +983,7 @@ class AladdinPumpSteady(remi.App):
         initialization_OK = False
       
         try:
-            self.euha = VICI_EUHA(self.euha_port_str)
+            self.euha = VICI_control(self.euha_port_str)
             initialization_OK = True
         except Exception as ex:
             self.linewriter.writeln('EUHA init error: '+str(ex))
