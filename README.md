@@ -42,7 +42,7 @@ VICI (Valco Instruments Co. Inc.) micro-controlled EUHA valve, with RS232 serial
 
 ### VICI EUHA chromatography valve (TTL interface via Arduino, under development)
 
-VICI (Valco Instruments Co. Inc.) EUHA valve actuator controlled directly using the "standard interface" on the back of the actuator enclosure via an Arduino Uno board with tailored switching electronics.
+VICI (Valco Instruments Co. Inc.) EUHA valve actuator controlled directly using the "standard interface" on the back of the actuator enclosure via [an Arduino Uno board with tailored switching electronics](https://github.com/mhvwerts/MANBAMM-control/tree/main/MOLTECH-VICI-TTL-control).
 
 
 ## Recommended Python configuration
