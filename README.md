@@ -27,8 +27,7 @@ Development has started on a small GUI application for Aladdin pump configuratio
 
 ### MOLTECH-FSS flow sensor system
 
-The flow sensor hardware modules developed at MOLTECH-Anjou are described [here](https://github.com/mhvwerts/MANBAMM-control/tree/main/MOLTECH-flow-sensor-system)
-.
+The flow sensor hardware modules developed at MOLTECH-Anjou are described [here](https://github.com/mhvwerts/MANBAMM-control/tree/main/MOLTECH-flow-sensor-system).
 
 
 ### MOLTECH-FLSH flash box
@@ -36,9 +35,14 @@ The flow sensor hardware modules developed at MOLTECH-Anjou are described [here]
 [Experimental orange box](https://github.com/mhvwerts/MANBAMM-control/tree/main/MOLTECH-flashbox) under continuous development for generating TTL pulse sequences.
 
 
-### VICI EUHA chromatography valve
+### VICI EUHA chromatography valve (RS232)
 
 VICI (Valco Instruments Co. Inc.) micro-controlled EUHA valve, with RS232 serial communications. It also found its place in the GUI control, so that it may be controlled simultaneously with an attached Aladdin pump.
+
+
+### VICI EUHA chromatography valve (TTL interface via Arduino, under development)
+
+VICI (Valco Instruments Co. Inc.) EUHA valve actuator controlled directly using the "standard interface" on the back of the actuator enclosure via an Arduino Uno board with tailored switching electronics.
 
 
 ## Recommended Python configuration
